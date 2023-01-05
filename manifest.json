@@ -1,0 +1,53 @@
+{
+  "author": "Vito Su",
+  "description": "miiner",
+  "icons":
+    {
+      "48": "images/miner-48.png",
+      "96": "images/miner-64.png"
+    },
+  "manifest_version": 2,
+  "name": "矿工",
+  "version": "1.0",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "downloads",
+    "notifications",
+    "contextMenus",
+    "<all_urls>"
+  ],
+  "browser_action": {
+    "default_icon": "images/miner-32.png",
+    "default_title": "矿工"
+  },
+  "content_scripts":[
+    {
+      "matches": ["http://*/*", "https://*/*"], 
+      "js": [
+        "js/jquery.min.js", 
+        "js/jquery-ui.min.js", 
+        "js/toolkit.js", 
+        "js/popup.js", 
+        "js/resolver.js",
+        "js/searcher.js",
+        "js/excavator.js",
+        "js/miner.js",
+        "js/content-script.js"
+      ],
+      "css": ["main.css"]
+    }
+  ],
+    "web_accessible_resources": [
+    "images/*"
+  ],
+  "background": {
+      "persistent": true,
+      "scripts": [ 
+        "js/jquery.min.js", 
+        "js/searcher.js",
+        "js/toolkit.js", 
+        "main.js" 
+      ]
+   }
+}
