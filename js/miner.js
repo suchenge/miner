@@ -28,6 +28,7 @@ class Miner {
         if (downloadInfos.length > 0) {
             for (const downloadInfo of downloadInfos) {
                 sendDownloadMessage(downloadInfo, (request) => {
+                    console.log(request);
                     $("#miner-" + request.id).addClass("line-before");
                 })
             }

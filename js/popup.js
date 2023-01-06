@@ -1,7 +1,3 @@
-const styleCss = {
-    miner: "width: 550px;height: 650px;border: 1px solid grey;float: left;position: fixed;z-index: 999; border-radius: 5px; background-color: white;margin: 5px;",
-}
-
 class Popup {
     constructor(name, title) {
         this.name = name;
@@ -17,69 +13,76 @@ class Popup {
         style.html(`
 .miner{
     width: 550px;
-    height: 650px;
+    height: 660px;
     border: 1px solid grey;
-    float: left;
-    position: absolute;
+    position: fixed;
     z-index: 999; 
     border-radius: 5px; 
     background-color: white;
     margin: 5px;
 }
-.tabInfo{
-    padding: 6px 10px; 
+.miner .tabInfo{
+    padding: 6px 0px; 
     text-align: left; 
     background-color: #E5F2F2;
     border-radius: 5px;
-    height:25px;
+    height:30px;
 }
-.titleInfo{
+.miner .tabInfo div{
+    background-color: #E5F2F2;
+    padding-bottom:5px;
+}
+.miner .titleInfo{
     float:left; 
-    font-size:20px; 
+    font-size:18px; 
     cursor: pointer;
     color: #9999;
-    line-height:20px;
+    margin-left:10px;
 }
-.button{
+.miner .tabInfo .downloadButton{
     text-align: right; 
     margin: 2px 2px 0px 0px;
+    padding-right:10px;
 }
-.button img{
+.miner .tabInfo .downloadButton img{
     width: 25px;
     height: 25px;
     cursor: pointer;
 }
-.infoContent{
+.miner .infoContent{
 	padding: 10px 8px; 
     overflow-y: auto; 
     overflow-x:hidden; 
-    height: 590px; 
+    height: 620px; 
     clear: both;
     font-family: Helvetica, arial, freesans, clean, sans-serif;
     font-size: 14px;
     color: #333;
 }
-.title{
+.miner .title{
 	height:20px;
 	line-height:20px;	
 	color:#3f51b5;
 	font-size:20px;
+    margin-bottom: 0px;
 }
-.title::before { 
+.miner .title::before { 
 	content: "●"; 
 	font-size: 40px;
 	line-height:15px;
 	color:#3f51b5;
 	margin-right:5px;
+    box-sizing: revert;
 }
-.title::after {
+.miner .title::after {
     content: " »";
     font-size: 20px;
 	line-height:15px;
 	color:#3f51b5;
 	margin-right:5px;
+    box-sizing: revert;
 }
-.line{
+.miner .line{
     font-size:15px;
 	margin-left:12px;
 	padding-left:20px;
@@ -88,20 +91,21 @@ class Popup {
 	border-left-width: 1px;
 	border-left-style: solid;
 }
-.line:first-child{
+.miner .line:first-child{
 	padding-top:5px;
 }
-.line:last-child{
+.miner .line:last-child{
 	padding-bottom:5px;
 }
-.line-before::before {
+.miner .line-before::before {
 	content: "✔ "; 
 	color: gray;
+    box-sizing: revert;
 }
-.infoContent::-webkit-scrollbar {
+.miner .infoContent::-webkit-scrollbar {
   width: 5px; 
 }
-.infoContent::-webkit-scrollbar-thumb {
+.miner .infoContent::-webkit-scrollbar-thumb {
     background: #ccc; 
     border-radius: 5px;
 }
@@ -113,29 +117,31 @@ class Popup {
         var Y = (screen_height - 650) / 2;
 
         this.container = $("<div class='miner'></div>");
-        this.container.attr("style", styleCss.miner);
         this.container.css("left", X + "px");
         this.container.css("top", Y + "px");
         this.container.draggable();
 
         let tabInfo = $("<div class='tabInfo'></div>");
         tabInfo.append($("<div class='titleInfo'>" + this.title + " ×</div>"));
-        tabInfo.append($("<div class='button'><img src='" + chrome.extension.getURL("images/download-2.png") + "'></img></div>"));
+        tabInfo.append($("<div class='downloadButton'><img src='" + chrome.extension.getURL("images/download-2.png") + "'></img></div>"));
 
         this.infoContent = $("<div class='infoContent'></div>");
 
-        this.container.append(style);
         this.container.append(tabInfo);
         this.container.append(this.infoContent);
         this.container.hide();
 
-        $("body").append(this.container);
+        let popup = $("<div></div>");
+        popup.append(this.container);
+        popup.append(style);
+
+        $("body").append(popup);
 
         $(".titleInfo").click(() => {
             this.hide();
         });
 
-        $(".button img").click(async () => {
+        $(".downloadButton img").click(async () => {
             if (this.downloadEvent) await this.downloadEvent(this);
         });
     }
@@ -190,6 +196,7 @@ class Popup {
         this.container.hide();
     }
     show() {
+        this.container.css("position","fixed");
         this.container.show();
     }
     clear() {

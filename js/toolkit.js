@@ -37,11 +37,11 @@ function sendDownloadMessage(downloadInfo, callback) {
     chrome.runtime.sendMessage(downloadInfo, callback);
 };
 
-async function browserDownload(downloadInfo) {
+async function browserDownload(downloadInfo, callback) {
     if (downloadInfo) {
         if (downloadInfo instanceof Array) {
             for (const info of downloadInfo) {
-                await chrome.downloads.download(info)
+                await chrome.downloads.download(info);
             }
         } else {
             await chrome.downloads.download(downloadInfo);
@@ -64,7 +64,7 @@ function buildDownloadInfo(uri, name, path) {
                 url: uri,
                 filename: replaceBadFileName(path) + "\\" + name,
                 method: "GET",
-                conflictAction: 'uniquify',
+                conflictAction: 'overwrite',
                 saveAs: false
             }
         };
