@@ -34,8 +34,7 @@
         "js/excavator.js",
         "js/miner.js",
         "js/content-script.js"
-      ],
-      "css": ["main.css"]
+      ]
     }
   ],
     "web_accessible_resources": [

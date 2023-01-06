@@ -27,16 +27,25 @@ class BaseResolver {
         return null;
     }
     getId() {
-
+        return "RQ220915023";
     }
     getTitle() {
-
+        return "土方小挖：E区货到人拣选出库";
     }
     getCover() {
-
+        return "base getCover";
     }
     getStills() {
-
+        return [
+            "包装层级EA，储区代码：E，货位用途：件拣货位",
+            "跟踪LPN号，生成WCS任务",
+            "订单补货、整包装补货、满足订单，生成WCS任务",
+            "更新对应容器编号状态为“拣货中”",
+            "将查询到的料车号记录到对应出库单“车号”字段",
+            "生成开放状态出库容器（容器主表托盘号字段记录：料车号，容器主表UDF18记录“料车”）</",
+            "调用标准接口RQ220725037创建WCS设备任务：呼叫料车前往合盘区（E-XN-03-02）",
+            "将来源容器完整合托到料车上，删除来源容器明细，保留容器主信息"
+        ];
     }
     getTorrents() {
 
@@ -53,7 +62,7 @@ class JavdbResolver extends BaseResolver {
     }
     getTitle() {
         let title = this.htmlContent.find("span[class='origin-title']").text();
-        if (!title){
+        if (!title) {
             title = this.htmlContent.find("strong[class='current-title']").text();
         }
         return title;
@@ -116,8 +125,10 @@ class Resolver {
             this.resolver = new JavdbResolver(this.url);
         else if (this.url.includes("javhoo.org"))
             this.resolver = new JavhooResolver(this.url);
+        else
+            this.resolver = new BaseResolver(this.url);
     }
-    async get(){
+    async get() {
         return await this.resolver.getContent();
     }
 }
