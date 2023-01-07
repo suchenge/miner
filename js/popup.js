@@ -111,8 +111,8 @@ class Popup {
 }
 `);
 
-        var screen_width = window.screen.availWidth;
-        var screen_height = window.screen.availHeight;
+        var screen_width = document.body.clientWidth;
+        var screen_height = document.body.clientHeight;
         var X = (screen_width - 500) / 2;
         var Y = (screen_height - 650) / 2;
 
