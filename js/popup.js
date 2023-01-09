@@ -112,7 +112,7 @@ class Popup {
 `);
 
         var screen_width = document.body.clientWidth;
-        var screen_height = document.body.clientHeight;
+        var screen_height = window.innerHeight;
         var X = (screen_width - 500) / 2;
         var Y = (screen_height - 650) / 2;
 
@@ -132,8 +132,8 @@ class Popup {
         this.container.hide();
 
         let popup = $("<div></div>");
-        popup.append(this.container);
         popup.append(style);
+        popup.append(this.container);
 
         $("body").append(popup);
 
@@ -154,10 +154,11 @@ class Popup {
             content = value;
         }
 
-        let lineContent = $("<div class='line' id='miner-" + content.hashCode() + "'>" + content + "</div>");
+        let lineContent = $("<div class='line' hashCode='miner-" + content.hashCode() + "'>" + content + "</div>");
         line.append(lineContent);
     };
     async write(getContent) {
+
         let line = $("<div></div>");
 
         let loading = $("<img src='" + chrome.extension.getURL("images/loading.gif") + "'/>");

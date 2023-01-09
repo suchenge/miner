@@ -5,6 +5,9 @@ class BaseSearcher {
     async getUrl() {
 
     }
+    async open(){
+        await chrome.tabs.create({ url: await this.getUrl(), active: false });
+    }
 }
 
 class JavdbSearcher extends BaseSearcher {

@@ -15,6 +15,7 @@
     "downloads",
     "notifications",
     "contextMenus",
+    "debugger",
     "<all_urls>"
   ],
   "browser_action": {
@@ -27,13 +28,14 @@
       "js": [
         "js/jquery.min.js", 
         "js/jquery-ui.min.js", 
-        "js/toolkit.js", 
-        "js/popup.js", 
+        "js/toolkit.js",
+        "js/fileInfo.js",
         "js/resolver.js",
         "js/searcher.js",
         "js/excavator.js",
-        "js/miner.js",
-        "js/content-script.js"
+        "js/popup.js",
+        "js/downloader.js",
+        "js/main.js"
       ]
     }
   ],
@@ -42,11 +44,11 @@
   ],
   "background": {
       "persistent": true,
-      "scripts": [ 
-        "js/jquery.min.js", 
+      "scripts": [
+        "js/jquery.min.js",
+        "js/toolkit.js",
         "js/searcher.js",
-        "js/toolkit.js", 
-        "main.js" 
+        "background.js"
       ]
    }
 }

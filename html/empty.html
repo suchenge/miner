@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+由于popup是运行在chrome打开的当前页面的环境下，所以样式会被当前页面的css影响
+解决方案：
+popup是一个空Div，并append一个iframe，iframe的src指向此页面
+在此页面中引入css或style并把popup需要展示的html内容append到这个页面中
+这个样式就不会被影响
+后续有空尝试实现
+</body>
+</html>

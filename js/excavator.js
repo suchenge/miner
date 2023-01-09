@@ -43,7 +43,7 @@ class Excavator {
 
         return {
             title: title.trim(),
-            stills: stills,
+            stills: FileInfo.getFiles(stills, title.trim(), file => (file.index + "").padStart(5, "0")),
             path: title.trim()
         }
     }

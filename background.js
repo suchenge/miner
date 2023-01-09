@@ -1,17 +1,42 @@
 chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
-    if (request && request.topic && request.message && request.topic === "download") {
-        await browserDownload(request.message);
+    if (request.topic === "download"){
+        await chrome.downloads.download(request.message, async (item) => {
+            /*
+            await chrome.tabs.sendMessage(sender.tab.id, {
+                topic:"download item",
+                id: request.id,
+                item: item
+            }, callback);
+            */
+        });
         callback(request);
     }
 });
 
+chrome.downloads.onChanged.addListener(async item => {
+    if (item.state && item.state.current === "complete") {
+        chrome.downloads.search({id:item.id}, dItem => {
+            let itemString = JSON.stringify(dItem);
+            chrome.tabs.executeScript({
+                code: "(async() => await sign('" + itemString + "'))()"
+            });
+        });
+
+    }
+    /*
+    let tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    await chrome.tabs.sendMessage(tabs[0].id, {
+        topic:"changed item",
+        item: item
+    });
+    */
+});
+
+
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {
     if (info.menuItemId === "menuSearch" && info.selectionText) {
-        let javdbSearcher = new JavdbSearcher(info.selectionText);
-        let javhooSearcher = new JavhooSearcher(info.selectionText);
-
-        await chrome.tabs.create({ url: await javdbSearcher.getUrl(), active: false });
-        await chrome.tabs.create({ url: await javhooSearcher.getUrl(), active: false });
+        await new JavdbSearcher(info.selectionText).open();
+        await new JavhooSearcher(info.selectionText).open();
     }
     else {
         await chrome.tabs.executeScript({
