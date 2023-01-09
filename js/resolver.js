@@ -18,16 +18,16 @@ class BaseResolver {
             return {
                 id: id,
                 title: title,
-                cover: new FileInfo(cover, path, -1,file => id),
+                cover: new FileInfo(cover, path, -1, file => id),
                 stills: FileInfo.getFiles(stills, path, file => id + "_" + file.index),
-                torrents: torrents,
+                torrents: TorrentInfo.getFiles(torrents, path, file => id + "_" + file.index),
                 path: path
             };
         }
         return null;
     }
     getId() {
-        return "RQ220915023";
+        return $("title").text();
     }
     getTitle() {
         return $("title").text();
@@ -84,7 +84,20 @@ class JavdbResolver extends BaseResolver {
         return result;
     }
     getTorrents() {
+        let result = [];
+        let magentElements = this.htmlContent.find("#magnets-content").children();
 
+        for(const magent of magentElements){
+            let magentConent = {
+                link: $(magent).find("a").attr("href"),
+                size: $(magent).find("span[class='meta']").text().trim(),
+                date: $(magent).find("span[class='time']").text().trim(),
+                name: $(magent).find("span[class='name']").text().trim(),
+            }
+            result.push(magentConent);
+        }
+
+        return result;
     }
 }
 
@@ -115,7 +128,20 @@ class JavhooResolver extends BaseResolver {
         return result;
     }
     getTorrents() {
+        let result = [];
+        let magentElements = this.htmlContent.find("#comments").find("tbody").last().find("tr");
 
+        for(const magent of magentElements){
+            let magentConent = {
+                link: $(magent).find("td").eq(0).find("a").attr("href"),
+                size: $(magent).find("td").eq(1).find("a").text().trim(),
+                date: $(magent).find("td").eq(2).find("a").text().trim(),
+                name: $(magent).find("td").eq(0).find("a").text().trim(),
+            }
+            result.push(magentConent);
+        }
+
+        return result;
     }
 }
 

@@ -90,6 +90,7 @@ class Popup {
 	border-left-color: #999999;
 	border-left-width: 1px;
 	border-left-style: solid;
+    cursor: pointer;
 }
 .miner .line:first-child{
 	padding-top:5px;
@@ -99,8 +100,17 @@ class Popup {
 }
 .miner .line-before::before {
 	content: "✔ "; 
+	color: #3f51b5;
+    box-sizing: revert;
+}
+.miner .line-before-selected::before {
+	content: "✔ "; 
 	color: gray;
     box-sizing: revert;
+}
+.miner .line span{
+    cursor: pointer;
+    color: gray;
 }
 .miner .infoContent::-webkit-scrollbar {
   width: 5px; 
@@ -110,7 +120,11 @@ class Popup {
     border-radius: 5px;
 }
 .miner .line input[type="checkbox"]{
-    height:0px; width:0px;padding:0px;margin:0px;border:0px
+    height: 0px; 
+    width: 0px;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
 }
 `);
 
@@ -147,17 +161,33 @@ class Popup {
         $(".downloadButton img").click(async () => {
             if (this.downloadEvent) await this.downloadEvent(this);
         });
+
+        this.selectedHashCodes = [];
     }
     setDownloadEvent(eventFunction) {
         this.downloadEvent = eventFunction;
     }
     writeLine = (line, value) => {
+        let hashCode = null;
         let content = "无法获取到内容";
         if (value) {
             content = value;
         }
 
         let lineContent = $("<div class='line' hashCode='miner-" + content.hashCode() + "'><input type='checkbox' hashCode='miner-" + content.hashCode() + "'></input>" + content + "</div>");
+        let deleteSpan = $("<span>✔ </span>");
+        lineContent.click(() => {
+            lineContent.addClass("line-before-selected");
+            lineContent.attr("selected", "selected");
+            deleteSpan.remove();
+            this.selectedHashCodes.push(content.hashCode());
+        });
+        lineContent.hover(() => {
+            if (!lineContent.attr("selected") || lineContent.attr("selected") != "selected")
+                lineContent.prepend(deleteSpan);
+        }, () => {
+            deleteSpan.remove();
+        });
         line.append(lineContent);
     };
     async write(getContent) {
@@ -202,6 +232,7 @@ class Popup {
     show() {
         this.container.css("position","fixed");
         this.container.show();
+        this.infoContent.html("");
     }
     clear() {
         this.infoContent.html("");
@@ -211,7 +242,12 @@ class Popup {
         console.log(elementMatch);
         let inputElement = $("input[hashCode='" + elementMatch + "']");
         let lineElement = $("div[hashCode='" + elementMatch + "']");
+        lineElement.removeClass("line-before-selected");
         lineElement.addClass("line-before");
         inputElement.focus();
+    }
+    matchLine(hashCode){
+        if (this.selectedHashCodes.length <= 0) return true;
+        return this.selectedHashCodes.includes(hashCode);
     }
 }
