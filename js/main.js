@@ -4,15 +4,14 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
     callback({method:"main listener callback", request});
 });
 
+let popup = new Popup("miner", "矿工");
+popup.create();
+
 async function sign(itemString){
     let item = eval(itemString);
-    let element = "miner-" + item[0].url.hashCode();
-    console.log(element);
-    $("div[hashCode='" + element + "']").addClass("line-before");
+    popup.sign(item[0].url.hashCode());
 }
 async function analysis(menuId) {
-    let popup = new Popup("miner", "矿工");
-    popup.create();
     popup.show();
 
     let donwloader = new Downloader();

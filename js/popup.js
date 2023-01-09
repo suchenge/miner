@@ -109,6 +109,9 @@ class Popup {
     background: #ccc; 
     border-radius: 5px;
 }
+.miner .line input[type="checkbox"]{
+    height:0px; width:0px;padding:0px;margin:0px;border:0px
+}
 `);
 
         var screen_width = document.body.clientWidth;
@@ -154,7 +157,7 @@ class Popup {
             content = value;
         }
 
-        let lineContent = $("<div class='line' hashCode='miner-" + content.hashCode() + "'>" + content + "</div>");
+        let lineContent = $("<div class='line' hashCode='miner-" + content.hashCode() + "'><input type='checkbox' hashCode='miner-" + content.hashCode() + "'></input>" + content + "</div>");
         line.append(lineContent);
     };
     async write(getContent) {
@@ -202,5 +205,13 @@ class Popup {
     }
     clear() {
         this.infoContent.html("");
+    }
+    sign(hashCode){
+        let elementMatch = "miner-" + hashCode;
+        console.log(elementMatch);
+        let inputElement = $("input[hashCode='" + elementMatch + "']");
+        let lineElement = $("div[hashCode='" + elementMatch + "']");
+        lineElement.addClass("line-before");
+        inputElement.focus();
     }
 }
