@@ -5,7 +5,6 @@ class FileInfo{
         this.path = path;
         this.index = index;
         this.buildNameFunction = buildNameFunction;
-
         if (url && !url.startsWith("http")) {
             let head = "http";
             let host = window.location.host;
@@ -39,10 +38,10 @@ class FileInfo{
 }
 
 FileInfo.prototype.toString = function() {
-    return this.uri;
+    return this.url;
 }
 
 FileInfo.prototype.hashCode = function(){
-    if(this.uri) return this.uri.hashCode();
+    if(this.url) return this.url.hashCode();
     return "";
 }

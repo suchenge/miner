@@ -5,10 +5,9 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
 });
 
 async function sign(itemString){
-    console.log(itemString);
     let item = eval(itemString);
-    console.log(item);
     let element = "miner-" + item[0].url.hashCode();
+    console.log(element);
     $("div[hashCode='" + element + "']").addClass("line-before");
 }
 async function analysis(menuId) {

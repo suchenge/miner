@@ -39,7 +39,6 @@ class Downloader {
             }
         }
 
-        console.log(files);
         return files;
     }
     async download() {
@@ -54,7 +53,7 @@ class Downloader {
                     saveAs: false
                 }, (response) => {
                     //$("#miner-" + response.id).addClass("line-before");
-                    console.log({method: "download response", response: response});
+                    //console.log({method: "download response", response: response});
                 });
             }
         }
