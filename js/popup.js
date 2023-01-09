@@ -163,24 +163,25 @@ class Popup {
         });
 
         this.selectedHashCodes = [];
+        this.contentHashCodes = [];
     }
     setDownloadEvent(eventFunction) {
         this.downloadEvent = eventFunction;
     }
     writeLine = (line, value) => {
-        let hashCode = null;
         let content = "无法获取到内容";
         if (value) {
             content = value;
         }
 
-        let lineContent = $("<div class='line' hashCode='miner-" + content.hashCode() + "'><input type='checkbox' hashCode='miner-" + content.hashCode() + "'></input>" + content + "</div>");
+        let hashCode = content.hashCode();
+        let lineContent = $("<div class='line' hashCode='miner-" + hashCode + "'><input type='checkbox' hashCode='miner-" + hashCode + "'></input>" + content + "</div>");
         let deleteSpan = $("<span>✔ </span>");
         lineContent.click(() => {
             lineContent.addClass("line-before-selected");
             lineContent.attr("selected", "selected");
             deleteSpan.remove();
-            this.selectedHashCodes.push(content.hashCode());
+            this.selectedHashCodes.push(hashCode);
         });
         lineContent.hover(() => {
             if (!lineContent.attr("selected") || lineContent.attr("selected") != "selected")
@@ -188,6 +189,8 @@ class Popup {
         }, () => {
             deleteSpan.remove();
         });
+
+        this.contentHashCodes.push(hashCode);
         line.append(lineContent);
     };
     async write(getContent) {
@@ -232,7 +235,6 @@ class Popup {
     show() {
         this.container.css("position","fixed");
         this.container.show();
-        this.infoContent.html("");
     }
     clear() {
         this.infoContent.html("");

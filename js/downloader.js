@@ -26,10 +26,12 @@ class Downloader {
                 && obj.url
                 && obj.url.startsWith("http")
                 && !obj.uri.startsWith("chrome-extension")
-                && ["jpg", "png", "jpeg"].includes(obj.type))
+                && ["jpg", "png", "jpeg"].includes(obj.type)
+                && files.filter(item => item.url == obj.url).length == 0)
                 files.push(obj.get());
 
-            if (obj instanceof TorrentInfo)
+            if (obj instanceof TorrentInfo
+                && torrents.filter(item => item.url == obj.url).length == 0)
                 torrents.push(obj);
         };
 

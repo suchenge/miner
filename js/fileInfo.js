@@ -57,7 +57,14 @@ class TorrentInfo{
 
     static getFiles(torrents, path, buildNameFunction){
         let result = [];
-        torrents.forEach((torrent, index) => result.push(new TorrentInfo(torrent, path, index, buildNameFunction)));
+        let counter = 0;
+        torrents.forEach((torrent, index) => {
+            if (!result.find(item => item.torrent.link == torrent.link)){
+                counter ++;
+                let info = new TorrentInfo(torrent, path, counter, buildNameFunction);
+                result.push(info);
+            }
+        });
         return result;
     }
 }

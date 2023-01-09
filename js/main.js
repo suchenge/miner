@@ -4,9 +4,9 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
     callback({method:"main listener callback", request});
 });
 
-let donwloader = new Downloader();
-let popup = new Popup("miner", "矿工");
-popup.create();
+let donwloader = null;
+let popup = null;
+
 
 async function sign(itemString){
     let item = eval(itemString);
@@ -15,6 +15,10 @@ async function sign(itemString){
 }
 
 async function analysis(menuId) {
+    donwloader = new Downloader()
+
+    popup = new Popup("miner", "矿工");
+    popup.create();
     popup.show();
 
     let url = window.location.href;
