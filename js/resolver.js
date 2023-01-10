@@ -122,7 +122,7 @@ class JavhooResolver extends BaseResolver {
         let imgs = this.htmlContent.find("a[class='dt-mfp-item']");
         for (const img of imgs) {
             let href = $(img).attr("href");
-            if (href != "#preview-video")
+            if (href !== "#preview-video")
                 result.push(href.trim());
         }
         return result;

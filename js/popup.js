@@ -128,10 +128,10 @@ class Popup {
 }
 `);
 
-        var screen_width = document.body.clientWidth;
-        var screen_height = window.innerHeight;
-        var X = (screen_width - 500) / 2;
-        var Y = (screen_height - 650) / 2;
+        const screen_width = document.body.clientWidth;
+        const screen_height = window.innerHeight;
+        const X = (screen_width - 500) / 2;
+        const Y = (screen_height - 650) / 2;
 
         this.container = $("<div class='miner'></div>");
         this.container.css("left", X + "px");
@@ -184,7 +184,7 @@ class Popup {
             this.selectedHashCodes.push(hashCode);
         });
         lineContent.hover(() => {
-            if (!lineContent.attr("selected") || lineContent.attr("selected") != "selected")
+            if (!lineContent.attr("selected") || lineContent.attr("selected") !== "selected")
                 lineContent.prepend(deleteSpan);
         }, () => {
             deleteSpan.remove();
@@ -225,7 +225,7 @@ class Popup {
                 }
             }
         } else {
-            writeLine(line);
+            this.writeLine(line);
         }
     }
     hide() {

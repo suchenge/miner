@@ -59,7 +59,7 @@ class TorrentInfo{
         let result = [];
         let counter = 0;
         torrents.forEach((torrent, index) => {
-            if (!result.find(item => item.torrent.link == torrent.link)){
+            if (!result.find(item => item.torrent.link === torrent.link)){
                 counter ++;
                 let info = new TorrentInfo(torrent, path, counter, buildNameFunction);
                 result.push(info);

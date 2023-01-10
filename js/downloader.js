@@ -27,11 +27,11 @@ class Downloader {
                 && obj.url.startsWith("http")
                 && !obj.uri.startsWith("chrome-extension")
                 && ["jpg", "png", "jpeg"].includes(obj.type)
-                && files.filter(item => item.url == obj.url).length == 0)
+                && files.filter(item => item.url === obj.url).length === 0)
                 files.push(obj.get());
 
             if (obj instanceof TorrentInfo
-                && torrents.filter(item => item.url == obj.url).length == 0)
+                && torrents.filter(item => item.url === obj.url).length === 0)
                 torrents.push(obj);
         };
 
@@ -91,8 +91,8 @@ class Downloader {
     }
     getMatchedFileHashCode(url){
 
-        let file = this.downloadList.files.filter(item => item.url == url);
-        if (!file || file.length == 0) file = this.downloadList.torrents.filter(item => item.url == url);
+        let file = this.downloadList.files.filter(item => item.url === url);
+        if (!file || file.length === 0) file = this.downloadList.torrents.filter(item => item.url === url);
 
         return file[0].url.hashCode();
     }
