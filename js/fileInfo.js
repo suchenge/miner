@@ -25,7 +25,7 @@ class FileInfo{
             uri: this.uri,
             url: this.url,
             type: this.type,
-            path: replaceBadFileName(this.path) + "\\" + name + "." + this.type,
+            path: replaceBadFileName(this.path) + "/" + name + "." + this.type,
             id: this.url.hashCode()
         }
     }
@@ -51,7 +51,7 @@ class TorrentInfo{
         this.torrent = torrent;
         this.index = index,
         this.type = "torrent";
-        this.path = replaceBadFileName(path) + "\\" + buildNameFunction(this) + ".torrent";
+        this.path = replaceBadFileName(path) + "/" + buildNameFunction(this) + ".torrent";
         this.url = this.getUrl();
     }
 

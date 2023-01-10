@@ -176,18 +176,18 @@ class Popup {
 
         let hashCode = content.hashCode();
         let lineContent = $("<div class='line' hashCode='miner-" + hashCode + "'><input type='checkbox' hashCode='miner-" + hashCode + "'></input>" + content + "</div>");
-        let deleteSpan = $("<span>✔ </span>");
+        let selectSpan = $("<span>✔ </span>");
         lineContent.click(() => {
             lineContent.addClass("line-before-selected");
             lineContent.attr("selected", "selected");
-            deleteSpan.remove();
+            selectSpan.remove();
             this.selectedHashCodes.push(hashCode);
         });
         lineContent.hover(() => {
             if (!lineContent.attr("selected") || lineContent.attr("selected") !== "selected")
-                lineContent.prepend(deleteSpan);
+                lineContent.prepend(selectSpan);
         }, () => {
-            deleteSpan.remove();
+            selectSpan.remove();
         });
 
         this.contentHashCodes.push(hashCode);
