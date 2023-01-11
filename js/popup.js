@@ -54,7 +54,7 @@ class Popup {
 	padding: 10px 8px; 
     overflow-y: auto; 
     overflow-x: hidden; 
-    height: 595px; 
+    height: 620px; 
     clear: both;
     font-family: Helvetica, arial, freesans, clean, sans-serif;
     font-size: 14px;
