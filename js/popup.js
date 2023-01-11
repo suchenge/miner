@@ -158,8 +158,10 @@ class Popup {
         $(".titleInfo").click(() => this.hide());
         $(".downloadButton img").click(() => {
             this.lines.forEach(line => {
-                line.loading();
-                this.downloadEvent(line);
+                if (line.state === "selected"){
+                    line.loading();
+                    this.downloadEvent(line);
+                }
             })
         });
 
@@ -184,11 +186,8 @@ class Popup {
 
         if (content && content.toString() !== undefined) value = content;
 
-        let popupLine = new PopupLine(value, this.isCanBeSelectEvent);
+        let popupLine = new PopupLine(value, this.isCanBeSelectEvent, this.isDefaultSelectedEvent);
         let line = popupLine.get();
-
-        if (this.isDefaultSelectedEvent && this.isDefaultSelectedEvent(value))
-            popupLine.selected();
 
         this.lines.push(popupLine);
 
@@ -237,12 +236,13 @@ class Popup {
 }
 
 class PopupLine{
-    constructor(content, isCanBeSelectEvent) {
+    constructor(content, isCanBeSelectEvent, isDefaultSelectedEvent) {
         this.content = content;
         this.element = null;
         this.signElement = null;
         this.state = "";
         this.isCanBeSelectEvent = isCanBeSelectEvent;
+        this.isDefaultSelected = isDefaultSelectedEvent;
         this.hashCode = content["hashCode"] ?? this.content.hashCode();
     }
     addAttrs(element){
@@ -269,20 +269,24 @@ class PopupLine{
         this.element = $("<div class='line'></div>");
         this.addAttrs(this.element);
 
+        let defaultSelected = this.isDefaultSelected(this.content);
+
         if (this.isCanBeSelectEvent(this.content)) {
             this.element.append(this.signElement);
             this.element.append(this.loadingElement);
             this.element.append("<input type='checkbox'/>");
 
-            this.element.click(() => this.selected());
-            this.element.hover(
-                () => {
-                    if (this.state === "") this.signElement.show()
-                },
-                () => {
-                    if (this.state === "") this.signElement.hide()
-                }
-            );
+            if (!defaultSelected) {
+                this.element.click(() => this.selected());
+                this.element.hover(
+                    () => {
+                        if (this.state === "") this.signElement.show()
+                    },
+                    () => {
+                        if (this.state === "") this.signElement.hide()
+                    }
+                );
+            }else this.selected();
         }
 
         this.element.append("<span>" + this.content.toString() + "</span>");

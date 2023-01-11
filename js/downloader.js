@@ -2,7 +2,6 @@ class Downloader {
     constructor() {
         this.content = null;
         this.executor = null;
-        this.downloadList = [];
     }
 
     set(executor) {
@@ -19,7 +18,7 @@ class Downloader {
 
     async download(line) {
         let file = line.content;
-        if (file instanceof BaseFileInfo) {
+        if (file instanceof BaseFileInfo && line.state === "selected") {
             sendMessage("download", file.hashCode, {
                 url: file.url,
                 filename: file.path,

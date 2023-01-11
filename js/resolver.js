@@ -75,7 +75,7 @@ class JavdbResolver extends BaseResolver {
     }
     getStills() {
         let result = [];
-        let imgs = this.htmlContent.find("a[data-fancybox='gallery']");
+        let imgs = this.htmlContent.find("a[data-fancybox='gallery'][class='tile-item']");
         for (const img of imgs) {
             let href = $(img).attr("href");
             if (href !== "#preview-video")

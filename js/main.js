@@ -13,7 +13,7 @@ async function analysis(menuId) {
 
     popup.create();
     popup.show();
-    popup.isCanBeSelect(content => content instanceof BaseFileInfo)
+    popup.isCanBeSelect(content => content instanceof BaseFileInfo);
     popup.isDefaultSelected(content => content instanceof FileInfo);
     popup.download(async(lines) => await downloader.download(lines));
     await popup.write(async() => await downloader.get());

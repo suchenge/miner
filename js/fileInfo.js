@@ -34,7 +34,10 @@ class FileInfo extends BaseFileInfo{
         if (!urls) return result;
 
         urls.forEach((url, index) => {
-            if(url && !url.startsWith("chrome-extension:")) result.push(new FileInfo(url, path, index, buildNameFunction))
+            if(url
+                && !url.startsWith("chrome-extension:")
+                && !result.find(item => item.url === url))
+                result.push(new FileInfo(url, path, index, buildNameFunction))
         });
         return result;
     }
