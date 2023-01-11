@@ -7,6 +7,7 @@ class Popup {
         this.infoContent = null;
 
         this.downloadEvent = null;
+        this.closeEvent = null;
     }
     create() {
         let style = $("<style scoped></style>");
@@ -26,14 +27,14 @@ class Popup {
     text-align: left; 
     background-color: #E5F2F2;
     border-radius: 5px;
-    height:30px;
+    height: 30px;
 }
 .miner .tabInfo div{
     background-color: #E5F2F2;
-    padding-bottom:5px;
+    padding-bottom: 5px;
 }
 .miner .titleInfo{
-    float:left; 
+    float: left; 
     font-size:18px; 
     cursor: pointer;
     color: #9999;
@@ -42,7 +43,7 @@ class Popup {
 .miner .tabInfo .downloadButton{
     text-align: right; 
     margin: 2px 2px 0px 0px;
-    padding-right:10px;
+    padding-right: 10px;
 }
 .miner .tabInfo .downloadButton img{
     width: 25px;
@@ -52,8 +53,8 @@ class Popup {
 .miner .infoContent{
 	padding: 10px 8px; 
     overflow-y: auto; 
-    overflow-x:hidden; 
-    height: 620px; 
+    overflow-x: hidden; 
+    height: 595px; 
     clear: both;
     font-family: Helvetica, arial, freesans, clean, sans-serif;
     font-size: 14px;
@@ -77,20 +78,23 @@ class Popup {
 .miner .title::after {
     content: " »";
     font-size: 20px;
-	line-height:15px;
-	color:#3f51b5;
-	margin-right:5px;
+	line-height: 15px;
+	color: #3f51b5;
+	margin-right: 5px;
     box-sizing: revert;
 }
+.miner .lineContainer{
+    
+}
 .miner .line{
-    font-size:15px;
-	margin-left:12px;
-	padding-left:20px;
-	line-height:30px;
+    font-size: 14px;
+	margin-left: 12px;
+	padding-left: 20px;
+	line-height: 30px;
 	border-left-color: #999999;
 	border-left-width: 1px;
 	border-left-style: solid;
-    cursor: pointer;
+    word-wrap: break-word;
 }
 .miner .line:first-child{
 	padding-top:5px;
@@ -98,26 +102,13 @@ class Popup {
 .miner .line:last-child{
 	padding-bottom:5px;
 }
-.miner .line-before::before {
-	content: "✔ "; 
-	color: #3f51b5;
-    box-sizing: revert;
-}
-.miner .line-before-selected::before {
-	content: "✔ "; 
-	color: gray;
-    box-sizing: revert;
-}
 .miner .line span{
     cursor: pointer;
-    color: gray;
 }
-.miner .infoContent::-webkit-scrollbar {
-  width: 5px; 
-}
-.miner .infoContent::-webkit-scrollbar-thumb {
-    background: #ccc; 
-    border-radius: 5px;
+.miner .line img{
+    float: left;
+    padding-right: 5px;
+    padding-top: 8px;
 }
 .miner .line input[type="checkbox"]{
     height: 0px; 
@@ -126,6 +117,14 @@ class Popup {
     margin: 0px;
     border: 0px;
 }
+.miner .infoContent::-webkit-scrollbar {
+  width: 5px; 
+}
+.miner .infoContent::-webkit-scrollbar-thumb {
+    background: #ccc; 
+    border-radius: 5px;
+}
+
 `);
 
         const screen_width = document.body.clientWidth;
@@ -142,7 +141,9 @@ class Popup {
         tabInfo.append($("<div class='titleInfo'>" + this.title + " ×</div>"));
         tabInfo.append($("<div class='downloadButton'><img src='" + chrome.extension.getURL("images/download-2.png") + "'></img></div>"));
 
+        this.loadingElement = $("<img src='" + chrome.extension.getURL("images/loading.gif") + "'/>");
         this.infoContent = $("<div class='infoContent'></div>");
+        this.infoContent.append(this.loadingElement);
 
         this.container.append(tabInfo);
         this.container.append(this.infoContent);
@@ -154,102 +155,164 @@ class Popup {
 
         $("body").append(popup);
 
-        $(".titleInfo").click(() => {
-            this.hide();
+        $(".titleInfo").click(() => this.hide());
+        $(".downloadButton img").click(() => {
+            this.lines.forEach(line => {
+                line.loading();
+                this.downloadEvent(line);
+            })
         });
 
-        $(".downloadButton img").click(async () => {
-            if (this.downloadEvent) await this.downloadEvent(this);
-        });
-
-        this.selectedHashCodes = [];
-        this.contentHashCodes = [];
+        this.lastLineContainer = null;
+        this.lines = [];
+        this.isDefaultSelectedEvent = null;
+        this.isCanBeSelectEvent = null;
+        this.downloadEvent = null;
     }
-    setDownloadEvent(eventFunction) {
-        this.downloadEvent = eventFunction;
+    download(event){
+        this.downloadEvent = event;
     }
-    writeLine = (line, value) => {
-        let content = "无法获取到内容";
-        if (value) {
-            content = value;
-        }
+    isCanBeSelect(event){
+        this.isCanBeSelectEvent = event;
+    }
+    isDefaultSelected(event){
+        this.isDefaultSelectedEvent = event;
+    }
 
-        let hashCode = content.hashCode();
-        let lineContent = $("<div class='line' hashCode='miner-" + hashCode + "'><input type='checkbox' hashCode='miner-" + hashCode + "'></input>" + content + "</div>");
-        let selectSpan = $("<span>✔ </span>");
-        lineContent.click(() => {
-            lineContent.addClass("line-before-selected");
-            lineContent.attr("selected", "selected");
-            selectSpan.remove();
-            this.selectedHashCodes.push(hashCode);
-        });
-        lineContent.hover(() => {
-            if (!lineContent.attr("selected") || lineContent.attr("selected") !== "selected")
-                lineContent.prepend(selectSpan);
-        }, () => {
-            selectSpan.remove();
-        });
+    writeLine(content){
+        let value = "无法获取到内容";
 
-        this.contentHashCodes.push(hashCode);
-        line.append(lineContent);
-    };
-    async write(getContent) {
+        if (content && content.toString() !== undefined) value = content;
 
-        let line = $("<div></div>");
+        let popupLine = new PopupLine(value, this.isCanBeSelectEvent);
+        let line = popupLine.get();
 
-        let loading = $("<img src='" + chrome.extension.getURL("images/loading.gif") + "'/>");
+        if (this.isDefaultSelectedEvent && this.isDefaultSelectedEvent(value))
+            popupLine.selected();
 
-        line.append(loading);
-        this.infoContent.append(line);
+        this.lines.push(popupLine);
 
-        let content = await getContent();
-        loading.remove();
+        this.lastLineContainer.append(line);
+        this.loadingElement.hide();
+    }
 
+    writeTitle(title){
+        this.loadingElement.hide();
+
+        this.lastLineContainer = $("<div class='lineContainer'></div>");
+
+        this.infoContent.append($("<div class='title'>" + title + "</div>"));
+        this.infoContent.append(this.lastLineContainer);
+    }
+
+    async write(getContentEvent){
+        let content = await getContentEvent();
         if (content) {
-            for (const key in content) {
-                let description = $("<div class='title'>" + key + "</div>");
-                line.append(description);
+            for (const key in content){
+                this.writeTitle(key);
 
-                let lineValue = $("<div></div>");
-                line.append(lineValue);
+                let value = content[key];
 
-                let valueContent = content[key];
-                if (valueContent) {
-                    if (valueContent instanceof Array) {
-                        valueContent.forEach(value => {
-                            this.writeLine(lineValue, value);
-                        })
-                    } else {
-                        this.writeLine(lineValue, valueContent)
-                    }
-                }
+                if (value instanceof Array) value.forEach(valueLine => this.writeLine(valueLine));
+                else this.writeLine(value);
             }
-        } else {
-            this.writeLine(line);
         }
     }
     hide() {
         this.infoContent.html("");
         this.container.hide();
+        if (this.closeEvent) this.closeEvent(this);
     }
     show() {
         this.container.css("position","fixed");
         this.container.show();
     }
-    clear() {
-        this.infoContent.html("");
+    sign(hashCode, state){
+        let line = this.lines.find(x => x.hashCode === hashCode);
+        if (line) {
+            line.focus();
+            line.sign(state);
+        }
     }
-    sign(hashCode){
-        let elementMatch = "miner-" + hashCode;
-        console.log(elementMatch);
-        let inputElement = $("input[hashCode='" + elementMatch + "']");
-        let lineElement = $("div[hashCode='" + elementMatch + "']");
-        lineElement.removeClass("line-before-selected");
-        lineElement.addClass("line-before");
-        inputElement.focus();
+}
+
+class PopupLine{
+    constructor(content, isCanBeSelectEvent) {
+        this.content = content;
+        this.element = null;
+        this.signElement = null;
+        this.state = "";
+        this.isCanBeSelectEvent = isCanBeSelectEvent;
+        this.hashCode = content["hashCode"] ?? this.content.hashCode();
     }
-    matchLine(hashCode){
-        if (this.selectedHashCodes.length <= 0) return true;
-        return this.selectedHashCodes.includes(hashCode);
+    addAttrs(element){
+        if (element){
+            if (this.content instanceof Object){
+                for(const key in this.content){
+                    this.addAttr(element, key, this.content[key]);
+                }
+            }
+        }
+    }
+    addAttr(element, key, value){
+        if (element && value && typeof value === "string"){
+            element.attr("miner-" + key, value);
+        }
+    }
+    get() {
+        this.signElement = $("<span>✔ </span>");
+        this.signElement.hide();
+
+        this.loadingElement = $("<img src='" + chrome.extension.getURL("images/smail-loading.gif") + "'/>");
+        this.loadingElement.hide();
+
+        this.element = $("<div class='line'></div>");
+        this.addAttrs(this.element);
+
+        if (this.isCanBeSelectEvent(this.content)) {
+            this.element.append(this.signElement);
+            this.element.append(this.loadingElement);
+            this.element.append("<input type='checkbox'/>");
+
+            this.element.click(() => this.selected());
+            this.element.hover(
+                () => {
+                    if (this.state === "") this.signElement.show()
+                },
+                () => {
+                    if (this.state === "") this.signElement.hide()
+                }
+            );
+        }
+
+        this.element.append("<span>" + this.content.toString() + "</span>");
+        return this.element;
+    }
+
+    focus(){
+        this.element.find("input[type='checkbox']").focus();
+    }
+    selected(){
+        if (this.state === "selected"){
+            this.state = "";
+            this.signElement.hide();
+        }else if (this.state === ""){
+            this.state = "selected";
+            this.signElement.show();
+        }
+    }
+    loading(){
+        this.signElement.hide()
+        this.loadingElement.show();
+    }
+    sign(state){
+        this.loadingElement.hide();
+
+        if (state) this.signElement.css("color", "#3f51b5");
+        else {
+            this.signElement.text("✘ ");
+            this.signElement.css("color", "red");
+        }
+        this.signElement.show();
     }
 }

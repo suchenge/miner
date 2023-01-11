@@ -1,10 +1,16 @@
-class FileInfo{
+class BaseFileInfo{
+    constructor() {
+    }
+}
+class FileInfo extends BaseFileInfo{
     constructor(url, path, index, buildNameFunction) {
+        super();
         this.uri = url;
         this.url = url;
         this.path = path;
         this.index = index;
         this.buildNameFunction = buildNameFunction;
+        this.description = "file";
         if (url && !url.startsWith("http")) {
             let head = "http";
             let host = window.location.host;
@@ -17,22 +23,19 @@ class FileInfo{
             let nameGroup = urlGroup[urlGroup.length - 1].split(".");
             this.type = nameGroup[nameGroup.length - 1];
         }
-    }
 
-    get(){
         let name = this.buildNameFunction(this);
-        return {
-            uri: this.uri,
-            url: this.url,
-            type: this.type,
-            path: replaceBadFileName(this.path) + "/" + name + "." + this.type,
-            id: this.url.hashCode()
-        }
+        this.path = replaceBadFileName(path) + "/" + name + "." + this.type;
+        this.hashCode = this.url ? this.url.hashCode() : "";
     }
 
     static getFiles(urls, path, buildNameFunction){
         let result = [];
-        urls.forEach((url, index) => result.push(new FileInfo(url, path, index, buildNameFunction)));
+        if (!urls) return result;
+
+        urls.forEach((url, index) => {
+            if(url && !url.startsWith("chrome-extension:")) result.push(new FileInfo(url, path, index, buildNameFunction))
+        });
         return result;
     }
 }
@@ -41,25 +44,25 @@ FileInfo.prototype.toString = function() {
     return this.url;
 }
 
-FileInfo.prototype.hashCode = function(){
-    if(this.url) return this.url.hashCode();
-    return "";
-}
-
-class TorrentInfo{
+class TorrentInfo extends BaseFileInfo{
     constructor(torrent, path, index, buildNameFunction){
+        super();
         this.torrent = torrent;
-        this.index = index,
+        this.index = index;
         this.type = "torrent";
         this.path = replaceBadFileName(path) + "/" + buildNameFunction(this) + ".torrent";
         this.url = this.getUrl();
+        this.hashCode = this.url ? this.url.hashCode() : "";
+        this.description = "torrent";
     }
 
     static getFiles(torrents, path, buildNameFunction){
         let result = [];
+        if (!torrents) return result;
+
         let counter = 0;
         torrents.forEach((torrent, index) => {
-            if (!result.find(item => item.torrent.link === torrent.link)){
+            if (torrent.link && !result.find(item => item.torrent.link === torrent.link)){
                 counter ++;
                 let info = new TorrentInfo(torrent, path, counter, buildNameFunction);
                 result.push(info);
@@ -71,10 +74,6 @@ class TorrentInfo{
 
 TorrentInfo.prototype.toString = function(){
     return this.index + " | " + this.torrent.name + " | " + this.torrent.size + " | " + this.torrent.date;
-}
-
-TorrentInfo.prototype.hashCode = function(){
-    return this.url.hashCode();
 }
 
 TorrentInfo.prototype.getUrl = function(){

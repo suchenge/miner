@@ -51,7 +51,7 @@ class BaseResolver {
         return result;
     }
     getTorrents() {
-
+        return [];
     }
 }
 

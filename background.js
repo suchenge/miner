@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
 });
 
 chrome.downloads.onChanged.addListener(async item => {
-    if (item.state && item.state.current === "complete") {
+    if (item.state && (item.state.current === "complete" || item.state.current === "interrupted")) {
         chrome.downloads.search({id:item.id}, dItem => {
             let itemString = JSON.stringify(dItem);
             chrome.tabs.executeScript({
