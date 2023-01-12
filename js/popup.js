@@ -26,21 +26,20 @@ class Popup {
                         text-align: left; 
                         background-color: #E5F2F2;
                         border-radius: 5px;
-                        height: 30px;
+                        height: 35px;
                     }
                     .miner .tabInfo div{
                         background-color: #E5F2F2;
                     }
                     .miner .titleInfo{
                         float: left; 
-                        font-size:18px; 
+                        font-size: 18px; 
                         cursor: pointer;
                         color: #9999;
                         margin-left: 10px;
                     }
                     .miner .tabInfo .downloadButton{
-                        text-align: right; 
-                        
+                        text-align: right;                     
                         padding-right: 10px;
                     }
                     .miner .tabInfo .downloadButton img{
@@ -52,7 +51,7 @@ class Popup {
                         padding: 10px 8px; 
                         overflow-y: auto; 
                         overflow-x: hidden; 
-                        height: 595px; 
+                        height: calc(100% - 37px);
                         clear: both;
                         font-family: Helvetica, arial, freesans, clean, sans-serif;
                         font-size: 14px;
@@ -121,15 +120,20 @@ class Popup {
                     }
                     </style>`);
 
-        const screen_width = window.innerWidth;
-        const screen_height = window.innerHeight;
-        const X = (screen_width - 550) / 2;
-        const Y = (screen_height - 660) / 2;
+        let calcContainerLocation = (container) => {
+            const screen_width = window.innerWidth;
+            const screen_height = window.innerHeight;
+            const X = screen_width - 575;
+            const Y = screen_height - 670;
+
+
+            container.css("left", X + "px");
+            container.css("top", Y + "px");
+        };
 
         this.container = $("<div class='miner'></div>");
-        this.container.css("left", X + "px");
-        this.container.css("top", Y + "px");
         this.container.draggable();
+        calcContainerLocation(this.container);
 
         let tabInfo = $("<div class='tabInfo'></div>");
         tabInfo.append($("<div class='titleInfo'>" + this.title + " ×</div>"));
@@ -148,6 +152,7 @@ class Popup {
         popup.append(this.container);
 
         $("body").append(popup);
+        $(window).resize(() => calcContainerLocation(this.container));
 
         $(".titleInfo").click(() => this.hide());
         $(".downloadButton img").click(() => {
