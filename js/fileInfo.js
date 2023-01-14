@@ -44,7 +44,7 @@ class FileInfo extends BaseFileInfo{
 }
 
 FileInfo.prototype.toString = function() {
-    return this.url;
+    return this.index === -1 ? this.url: this.index + " | " + this.url;
 }
 
 class TorrentInfo extends BaseFileInfo{

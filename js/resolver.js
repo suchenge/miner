@@ -3,7 +3,7 @@ class BaseResolver {
         this.url = url;
         this.htmlContent = null;
     }
-    async getContent() {
+    async get() {
         let response = await request(this.url);
         if (response) {
             this.htmlContent = $(response);
@@ -142,22 +142,5 @@ class JavhooResolver extends BaseResolver {
         }
 
         return result;
-    }
-}
-
-class Resolver {
-    constructor(url) {
-        this.url = url;
-        this.resolver = null;
-
-        if (this.url.includes("javdb.com"))
-            this.resolver = new JavdbResolver(this.url);
-        else if (this.url.includes("javhoo.org"))
-            this.resolver = new JavhooResolver(this.url);
-        else
-            this.resolver = new BaseResolver(this.url);
-    }
-    async get() {
-        return await this.resolver.getContent();
     }
 }

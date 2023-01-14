@@ -9,7 +9,7 @@ async function analysis(menuId) {
     let url = window.location.href;
 
     let downloader = new Downloader()
-    downloader.set(!url.includes("jpmnb.net") ? new Resolver(url) : new Excavator(url));
+    downloader.set(getMiner(url));
 
     popup.create();
     popup.show();
@@ -24,4 +24,28 @@ async function sign(fileItem){
     console.log(item);
     let hashCode = item.url.hashCode();
     popup.sign(hashCode, item.state === "complete");
+}
+
+function getMiner(url){
+    let settings = [
+        {
+            name: "jpmnb",
+            miner: () => new JpmnbExcavator(url)
+        },{
+            name: "xiannvku",
+            miner: () => new XiannvkuExcavator(url)
+        },{
+            name: "javhoo",
+            miner: () => new JavhooResolver(url)
+        },{
+            name: "javdb",
+            miner: () => new JavdbResolver(url)
+        },
+    ]
+    
+    for(const setting of settings){
+        if (url.includes(setting.name))
+            return setting.miner();
+    }
+
 }

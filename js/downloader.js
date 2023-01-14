@@ -26,7 +26,7 @@ class Downloader {
                 conflictAction: "overwrite",
                 saveAs: false,
             }, response => {
-            });
+            },500);
         }
     }
 }
