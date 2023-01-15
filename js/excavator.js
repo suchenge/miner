@@ -117,3 +117,85 @@ class XiannvkuExcavator extends BaseExcavator{
         return urls;
     }
 }
+
+class XiurenbaExcavator extends BaseExcavator{
+    constructor(url){
+        super(url)
+    }
+    getTitle(html){
+        return html.filter("meta[name='description']").attr("content");
+    }
+    getStills(html){
+        let stills = [];
+        let title = this.getTitle(html);
+
+        let imgElement = html.find("img");
+        if (imgElement) {
+            for (const element of imgElement) {
+                let alt = $(element).attr("alt")
+                if (alt && alt.includes(title)){
+                    let src = $(element).attr("src");
+                    stills.push(src.trim());
+                }
+                
+            }
+        }
+        return stills;
+    }
+    getOtherPageUrls(html){
+        let urls = [];
+        let pagination = html.find("div[class='page']").first();
+        let pageLinks = $(pagination).find("a[class!='current']");
+
+        if (pageLinks && pageLinks.length > 0){
+            for(const link of pageLinks){
+                let href = $(link).attr("href");
+                if (href && !urls.includes(href)){
+                    urls.push(href);
+                }
+            }
+        }
+        return urls;
+    }
+}
+
+class Xrmn01Excavator extends BaseExcavator{
+    constructor(url){
+        super(url)
+    }
+    getTitle(html){
+        return html.find("h1").text();
+    }
+    getStills(html){
+        let stills = [];
+        let title = this.getTitle(html);
+
+        let imgElement = html.find("img");
+        if (imgElement) {
+            for (const element of imgElement) {
+                let alt = $(element).attr("alt")
+                if (alt && alt.includes(title)){
+                    let src = $(element).attr("src");
+                    stills.push(src.trim());
+                }
+                
+            }
+        }
+        return stills;
+    }
+    getOtherPageUrls(html){
+        let urls = [];
+        let pagination = html.find("div[class='page']").first();
+        let pageLinks = $(pagination).find("a[class!='current']");
+
+        if (pageLinks && pageLinks.length > 0){
+            for(const link of pageLinks){
+                let href = $(link).attr("href");
+                if (href && !urls.includes(href)){
+                    urls.push(href);
+                }
+            }
+        }
+        return urls;
+    }
+}
