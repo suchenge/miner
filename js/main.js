@@ -52,6 +52,8 @@ function getMiner(url){
     for(const setting of settings){
         if (url.includes(setting.name))
             return setting.miner();
+        else
+            return new BaseExcavator(url);
     }
 
 }

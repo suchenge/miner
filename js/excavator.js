@@ -32,10 +32,17 @@ class BaseExcavator{
         } 
     }
     getTitle(html){
-        return "";
+        return html.filter("title").text();
     }
     getStills(html){
-        return [];
+        let result = []
+        let srcList = html.find("img");
+        if (srcList && srcList.length > 0){
+            for(const src of srcList) {
+                if(src) result.push($(src).attr("src"));
+            }
+        }
+        return result;
     }
     getOtherPageUrls(html){
         return [];

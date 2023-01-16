@@ -15,7 +15,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
 
 chrome.downloads.onChanged.addListener(async item => {
     if (item.state && (item.state.current === "complete" || item.state.current === "interrupted")) {
-        chrome.downloads.search({id:item.id}, dItem => {
+        chrome.downloads.search({ id: item.id }, dItem => {
             let itemString = JSON.stringify(dItem);
             chrome.tabs.executeScript({
                 code: "(async() => await sign('" + itemString + "'))()"
@@ -39,7 +39,7 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
         await new JavhooSearcher(info.selectionText).open();
     }
     else {
-        await chrome.tabs.executeScript({
+        await chrome.tabs.executeScript(tab.id, {
             code: "(async() => await analysis('" + info.menuItemId + "'))()"
         });
     }
