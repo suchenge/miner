@@ -27,6 +27,8 @@ async function sign(tabId, fileItem){
 }
 
 function getMiner(url){
+    let result = new BaseExcavator(url);
+
     let settings = [
         {
             name: "jpmnb",
@@ -50,10 +52,11 @@ function getMiner(url){
     ]
     
     for(const setting of settings){
-        if (url.includes(setting.name))
-            return setting.miner();
-        else
-            return new BaseExcavator(url);
+        if (url.includes(setting.name)){
+            result = setting.miner();
+            break;
+        }
     }
 
+    return result;
 }
