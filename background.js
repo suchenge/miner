@@ -1,6 +1,7 @@
 chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
     if (request.topic === "download"){
         await chrome.downloads.download(request.message, async (item) => {
+            downloadItemInfs.set(item, sender.tab.id);
             /*
             await chrome.tabs.sendMessage(sender.tab.id, {
                 topic:"download item",
@@ -17,8 +18,11 @@ chrome.downloads.onChanged.addListener(async item => {
     if (item.state && (item.state.current === "complete" || item.state.current === "interrupted")) {
         chrome.downloads.search({ id: item.id }, dItem => {
             let itemString = JSON.stringify(dItem);
-            chrome.tabs.executeScript({
-                code: "(async() => await sign('" + itemString + "'))()"
+            let tabId = downloadItemInfs.get(item.id);
+            downloadItemInfs.delete(item.id);
+
+            chrome.tabs.executeScript(tabId, {
+                code: "(async() => await sign('" + tabId + "', '" + itemString + "'))()"
             });
         });
 
@@ -44,6 +48,8 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
         });
     }
 });
+
+let downloadItemInfs = new Map();
 
 const menus = [{
     id: "menuMain",

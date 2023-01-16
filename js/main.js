@@ -19,9 +19,9 @@ async function analysis(menuId) {
     await popup.write(async() => await downloader.get());
 }
 
-async function sign(fileItem){
+async function sign(tabId, fileItem){
     let item = eval(fileItem)[0];
-    console.log(item);
+    console.log({tabId, item});
     let hashCode = item.url.hashCode();
     popup.sign(hashCode, item.state === "complete");
 }
