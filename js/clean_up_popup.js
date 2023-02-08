@@ -145,7 +145,7 @@ class CleanUpPopup{
 
         let tabInfo = $("<div class='tabInfo'></div>");
         let titleInfo = $("<div class='titleInfo'>" + this.title + " ×</div>");
-        let buttonInfo = $("<div class='buttonInfo'><img id='clean-up-button' src='" + chrome.extension.getURL("images/exchange-2.png") + "'></img></div>");
+        let buttonInfo = $("<div class='buttonInfo'><img id='clean-up-button' src='" + chrome.extension.getURL("images/clear-2.png") + "'></img></div>");
 
         tabInfo.append(titleInfo)
         tabInfo.append(buttonInfo);
@@ -159,20 +159,17 @@ class CleanUpPopup{
 
         titleInfo.click(() => this.hide());
         $(buttonInfo.find("img")).click(async () => {
-            let imgSrc = $("#clean-up-button").attr("src");
-            if (imgSrc.includes("exchange")){
-                let bookmarkContent = $("#clean-up-textarea").val();
-                let bookmarks = eval(bookmarkContent);
-                console.log(bookmarks);
-                this.infoContent.html("");
-                for(const bookmark of bookmarks){
-                    let line = $("<div class='line' hashCode='" + bookmark.href.hashCode() + "'></div>");
-                    line.append($("<div>" + bookmark.href + "</div>"));
-                    line.append($("<div><img src='" + chrome.extension.getURL("images/smail-loading.gif") + "'/></div>"));
-                    this.infoContent.append(line);
+            let bookmarkContent = $("#clean-up-textarea").val();
+            let bookmarks = eval(bookmarkContent);
+            console.log(bookmarks);
+            this.infoContent.html("");
+            for (const bookmark of bookmarks) {
+                let line = $("<div class='line' hashCode='" + bookmark.href.hashCode() + "'></div>");
+                line.append($("<div>" + bookmark.href + "</div>"));
+                line.append($("<div><img src='" + chrome.extension.getURL("images/smail-loading.gif") + "'/></div>"));
+                this.infoContent.append(line);
 
-                    sendMessage("bookmark", 1, bookmark.href);
-                }
+                sendMessage("bookmark", 1, bookmark.href);
             }
         });
 
