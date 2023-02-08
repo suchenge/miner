@@ -18,6 +18,7 @@ class Downloader {
 
     async download(line) {
         let file = line.content;
+
         if (file instanceof BaseFileInfo && line.state === "selected") {
             sendMessage("download", file.hashCode, {
                 url: file.url,
@@ -25,8 +26,7 @@ class Downloader {
                 method: "GET",
                 conflictAction: "overwrite",
                 saveAs: false,
-            }, response => {
-            },500);
+            }, response => {});
         }
     }
 }

@@ -45,6 +45,10 @@ function sendMessage(topic, id, messageBody, callback) {
     chrome.runtime.sendMessage(request, callback);
 }
 
+async function matchBookmark(url){
+    return await chrome.bookmarks.get("临时");
+}
+
 function replaceBadFileName(name) {
     let str = name;
     str = str.replace(/\?/g, '');

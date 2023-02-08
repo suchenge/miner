@@ -19,6 +19,18 @@ async function analysis(menuId) {
     await popup.write(async() => await downloader.get());
 }
 
+async function clean_up(){
+    let cleanupPopup = new CleanUpPopup("miner-clean-up-popup", "清洁工");
+    cleanupPopup.create();
+}
+
+async function clean_up_sign(tabId, bookmark){
+    let item = eval(bookmark)[0];
+    console.log(item);
+    let hashCode = item.url.hashCode();
+    $("div[hashCode='" + hashCode + "'] div:last-child").html(item.title);
+}
+
 async function sign(tabId, fileItem){
     let item = eval(fileItem)[0];
     console.log({tabId, item});

@@ -6,7 +6,12 @@ class BaseSearcher {
 
     }
     async open(){
-        await chrome.tabs.create({ url: await this.getUrl(), active: false });
+        if (this.id){
+            let url = await this.getUrl();
+            if (url){
+                await chrome.tabs.create({ url: await this.getUrl(), active: false });
+            }
+        }
     }
 }
 

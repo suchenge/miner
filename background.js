@@ -12,6 +12,18 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
         });
         callback(request);
     }
+    if (request.topic === "bookmark"){
+        await chrome.bookmarks.search({url: request.message}, async (item) => {
+            let bookmarkString = JSON.stringify(item);
+            chrome.bookmarks.remove(item[0].id, () => {
+                chrome.tabs.executeScript(sender.tab.id, {
+                    code: "(async() => await clean_up_sign('" + sender.tab.id + "', '" + bookmarkString + "'))()"
+                });
+            });
+
+
+        });
+    }
 });
 
 chrome.downloads.onChanged.addListener(async item => {
@@ -38,14 +50,20 @@ chrome.downloads.onChanged.addListener(async item => {
 
 
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {
-    if (info.menuItemId === "menuSearch" && info.selectionText) {
-        await new JavdbSearcher(info.selectionText).open();
-        await new JavhooSearcher(info.selectionText).open();
-    }
-    else {
-        await chrome.tabs.executeScript(tab.id, {
-            code: "(async() => await analysis('" + info.menuItemId + "'))()"
-        });
+    switch (info.menuItemId){
+        case "menuSearch":
+            await new JavdbSearcher(info.selectionText).open();
+            break
+        case "menuDownload":
+            await chrome.tabs.executeScript(tab.id, {
+                code: "(async() => await analysis('" + info.menuItemId + "'))()"
+            });
+            break
+        case "menuClear":
+            await chrome.tabs.executeScript(tab.id, {
+                code: "(async() => await clean_up())()"
+            });
+            break
     }
 });
 
@@ -66,6 +84,15 @@ const menus = [{
     id: "menuSearch",
     visible: true,
     title: "☣ 勘探",
+    parentId: "menuMain",
+    contexts: ["all"],
+}, {
+    type:"separator",
+    parentId: "menuMain",
+}, {
+    id: "menuClear",
+    visible: true,
+    title: "✂ 清理",
     parentId: "menuMain",
     contexts: ["all"],
 }/*

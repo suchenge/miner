@@ -15,7 +15,7 @@
     "downloads",
     "notifications",
     "contextMenus",
-    "debugger",
+    "bookmarks",
     "<all_urls>"
   ],
   "browser_action": {
@@ -34,6 +34,7 @@
         "js/searcher.js",
         "js/excavator.js",
         "js/popup.js",
+        "js/clean_up_popup.js",
         "js/downloader.js",
         "js/main.js"
       ]
