@@ -161,15 +161,20 @@ class CleanUpPopup{
         $(buttonInfo.find("img")).click(async () => {
             let bookmarkContent = $("#clean-up-textarea").val();
             let bookmarks = eval(bookmarkContent);
-            console.log(bookmarks);
-            this.infoContent.html("");
-            for (const bookmark of bookmarks) {
-                let line = $("<div class='line' hashCode='" + bookmark.href.hashCode() + "'></div>");
-                line.append($("<div>" + bookmark.href + "</div>"));
-                line.append($("<div><img src='" + chrome.extension.getURL("images/smail-loading.gif") + "'/></div>"));
-                this.infoContent.append(line);
 
-                sendMessage("bookmark", 1, bookmark.href);
+            console.log(bookmarks);
+
+            this.infoContent.html("");
+
+            for (const bookmark of bookmarks) {
+                if (bookmark.status === "done"){
+                    let line = $("<div class='line' hashCode='" + bookmark.href.hashCode() + "'></div>");
+                    line.append($("<div>" + bookmark.href + "</div>"));
+                    line.append($("<div><img src='" + chrome.extension.getURL("images/smail-loading.gif") + "'/></div>"));
+                    this.infoContent.append(line);
+
+                    sendMessage("bookmark", 1, bookmark.href);
+                }
             }
         });
 
