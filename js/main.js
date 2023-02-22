@@ -27,7 +27,9 @@ async function clean_up(){
 async function clean_up_sign(tabId, bookmark){
     let item = eval(bookmark)[0];
     console.log(item);
+
     let hashCode = item.url.hashCode();
+    $("input[type=checkbox][hashCode='" + hashCode + "']").focus();
     $("div[hashCode='" + hashCode + "'] div:last-child").html(item.title);
 }
 

@@ -168,9 +168,13 @@ class CleanUpPopup{
 
             for (const bookmark of bookmarks) {
                 if (bookmark.status === "done"){
-                    let line = $("<div class='line' hashCode='" + bookmark.href.hashCode() + "'></div>");
+                    let hashCode = bookmark.href.hashCode();
+
+                    let line = $("<div class='line' hashCode='" + hashCode + "'></div>");
                     line.append($("<div>" + bookmark.href + "</div>"));
+                    line.append($("<input type='checkbox' hashCode='"+ hashCode +"'/>"));
                     line.append($("<div><img src='" + chrome.extension.getURL("images/smail-loading.gif") + "'/></div>"));
+
                     this.infoContent.append(line);
 
                     sendMessage("bookmark", 1, bookmark.href);
