@@ -92,7 +92,6 @@ class CleanUpPopup{
                         width: 65%;
                         float: right;
                         margin-right: 10px;
-                        text-decoration: line-through;
                     }
                     .miner-clean-up-popup .line span{
                         cursor: pointer;
@@ -172,8 +171,7 @@ class CleanUpPopup{
 
                     let line = $("<div class='line' hashCode='" + hashCode + "'></div>");
                     line.append($("<div>" + bookmark.href + "</div>"));
-                    line.append($("<input type='checkbox' hashCode='"+ hashCode +"'/>"));
-                    line.append($("<div><img src='" + chrome.extension.getURL("images/smail-loading.gif") + "'/></div>"));
+                    line.append($("<div><input type='checkbox' hashCode='"+ hashCode +"'/>" + bookmark.title + "</div>"));
 
                     this.infoContent.append(line);
 
