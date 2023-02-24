@@ -55,7 +55,7 @@ function getMiner(url){
             name: "xiannvku",
             miner: () => new XiannvkuExcavator(url)
         },{
-            name: "xiurenba",
+            name: "xiuren01",
             miner: () => new XiurenbaExcavator(url)
         },{
             name: "xrmn01",
