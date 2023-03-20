@@ -1,4 +1,4 @@
-class CleanUpPopup{
+class CleanUpPopup {
     constructor(name, title) {
         this.name = name;
         this.title = title;
@@ -7,7 +7,7 @@ class CleanUpPopup{
         this.infoContent = null;
     }
 
-    create(){
+    create() {
         let style = $(`<style scoped>
                     .miner-clean-up-popup{
                         border: 1px solid grey;
@@ -166,17 +166,17 @@ class CleanUpPopup{
             this.infoContent.html("");
 
             for (const bookmark of bookmarks) {
-                if (bookmark.status === "done"){
-                    let hashCode = bookmark.href.hashCode();
+                //if (bookmark.status === "done"){
+                let hashCode = bookmark.href.hashCode();
 
-                    let line = $("<div class='line' hashCode='" + hashCode + "'></div>");
-                    line.append($("<div>" + bookmark.href + "</div>"));
-                    line.append($("<div><input type='checkbox' hashCode='"+ hashCode +"'/>" + bookmark.title + "</div>"));
+                let line = $("<div class='line' hashCode='" + hashCode + "'></div>");
+                line.append($("<div>" + bookmark.href + "</div>"));
+                line.append($("<div><input type='checkbox' hashCode='" + hashCode + "'/>" + bookmark.title + "</div>"));
 
-                    this.infoContent.append(line);
+                this.infoContent.append(line);
 
-                    sendMessage("bookmark", 1, bookmark.href);
-                }
+                sendMessage("bookmark", 1, bookmark.href);
+                //}
             }
         });
 
