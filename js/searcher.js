@@ -26,7 +26,7 @@ class JavdbSearcher extends BaseSearcher {
         if (response) {
             let html = $(response);
             let href = html.find("a[class='box']").attr("href");
-            return baseUrl + href;
+            return baseUrl + href.substring(1, href.length);
         }
         return null;
     }

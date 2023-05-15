@@ -5,6 +5,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
 });
 
 let popup = new Popup("miner", "矿工");
+
 async function analysis(menuId) {
     let url = window.location.href;
 
@@ -78,3 +79,26 @@ function getMiner(url){
 
     return result;
 }
+
+(function load(){
+    let currentUrl = window.location.href;
+    if (currentUrl.includes("https://testxa.360scm.com/")){
+        let cookies = [
+            {"Key": "SSID", "Value": localStorage.getItem("SSID")},
+            {"Key": "Token", "Value": localStorage.getItem("Token")},
+        ];
+
+        console.log(cookies);
+
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "http://localhost/SCM.Developer.Apis/cookie",
+            contentType: "application/json;charset=UTF-8",
+            data: JSON.stringify(cookies),
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    }
+})();
