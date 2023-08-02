@@ -52,10 +52,11 @@ chrome.downloads.onChanged.addListener(async item => {
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {
     switch (info.menuItemId){
         case "menuSearch":
-            if (tab.url.includes('dms.360scm.com')){
+            if (tab.url.includes('dms.360scm.com') || tab.url.includes('devops.aliyun.com')){
                 dms_url = 'https://dms.360scm.com/dms/dev/dev_view_rq.html?menuid=119&reqid=' + info.selectionText;
                 await chrome.tabs.create({ url: dms_url, active: false });
-            }else{
+            }
+            else{
                 await new JavdbSearcher(info.selectionText).open();
             }
             break
