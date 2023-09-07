@@ -63,3 +63,15 @@ function replaceBadFileName(name) {
     //str = str.replace(/\./g, '');
     return str;
 }
+
+function isRelativePath(src){
+    return !/^https?:\/\//i.test(src);
+}
+
+function getAbsoluteUrl(url){
+    var img = new Image();
+    img.src = url;  // 设置相对路径给Image, 此时会发送出请求
+    url = img.src;  // 此时相对路径已经变成绝对路径
+    img.src = null; // 取消请求
+    return url;
+}

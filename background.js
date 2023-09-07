@@ -65,17 +65,22 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
             else{
                 await new JavdbSearcher(info.selectionText).open();
             }
-            break
+            break;
         case "menuDownload":
             await chrome.tabs.executeScript(tab.id, {
                 code: "(async() => await analysis('" + info.menuItemId + "'))()"
             });
-            break
+            break;
         case "menuClear":
             await chrome.tabs.executeScript(tab.id, {
                 code: "(async() => await clean_up())()"
             });
-            break
+            break;
+        case "menuExcavate":
+            await chrome.tabs.executeScript(tab.id, {
+                code: "(async() => await excavate())()"
+            });
+            break;
     }
 });
 
@@ -96,6 +101,12 @@ const menus = [{
     id: "menuSearch",
     visible: true,
     title: "☣ 勘探",
+    parentId: "menuMain",
+    contexts: ["all"],
+}, {
+    id: "menuExcavate",
+    visible: true,
+    title: "☭ 挖掘",
     parentId: "menuMain",
     contexts: ["all"],
 }, {

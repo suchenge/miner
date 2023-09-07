@@ -191,4 +191,8 @@ class CleanUpPopup {
         this.infoContent.html("");
         this.container.hide();
     }
+
+    write(content){
+        $("#clean-up-textarea").val(content);
+    }
 }

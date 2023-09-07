@@ -6,6 +6,27 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
 
 let popup = new Popup("miner", "矿工");
 
+async function excavate(){
+    var imgs = $(document.body).find("img");
+    var srcContext = '';
+
+    for(let i = 0; i < imgs.length; i ++){
+        let src = $(imgs[i]).attr('src');
+
+        if (!src) continue;
+
+        if (isRelativePath(src)){
+            src = getAbsoluteUrl(src);
+        }
+
+        srcContext += src + '\n'
+    }
+
+    let cleanupPopup = new CleanUpPopup("miner-clean-up-popup", "清洁工");
+    cleanupPopup.create();
+    cleanupPopup.write(srcContext);
+}
+
 async function analysis(menuId) {
     let url = window.location.href;
 

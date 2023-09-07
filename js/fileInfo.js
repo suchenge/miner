@@ -11,6 +11,7 @@ class FileInfo extends BaseFileInfo{
         this.index = index;
         this.buildNameFunction = buildNameFunction;
         this.description = "file";
+        
         if (url && !url.startsWith("http")) {
             let head = "http";
             let host = window.location.host;
