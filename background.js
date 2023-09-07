@@ -94,19 +94,19 @@ const menus = [{
 }, {
     id: "menuDownload",
     visible: true,
-    title: "☢ 开采",
+    title: "🗜️ 开采",
     parentId: "menuMain",
     contexts: ["all"],
 }, {
     id: "menuSearch",
     visible: true,
-    title: "☣ 勘探",
+    title: "🛠️ 勘探",
     parentId: "menuMain",
     contexts: ["all"],
 }, {
     id: "menuExcavate",
     visible: true,
-    title: "☭ 挖掘",
+    title: "⛏️ 挖掘",
     parentId: "menuMain",
     contexts: ["all"],
 }, {
@@ -115,7 +115,7 @@ const menus = [{
 }, {
     id: "menuClear",
     visible: true,
-    title: "✂ 清理",
+    title: "🪚 清理",
     parentId: "menuMain",
     contexts: ["all"],
 }/*
