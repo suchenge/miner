@@ -39,13 +39,6 @@ chrome.downloads.onChanged.addListener(async item => {
         });
 
     }
-    /*
-    let tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    await chrome.tabs.sendMessage(tabs[0].id, {
-        topic:"changed item",
-        item: item
-    });
-    */
 });
 
 

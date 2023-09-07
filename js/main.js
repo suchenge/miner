@@ -4,7 +4,31 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
     callback({method:"main listener callback", request});
 });
 
+replaceDmsRequest();
 let popup = new Popup("miner", "矿工");
+
+function replaceDmsRequest(){
+    let url = window.location.href;
+    let replaced = false;
+    if (url.includes('dms.360scm.com')){
+        $('body').click(() => {
+            if (replaced) return;
+            replaced = true;
+
+            let control = $('.easyui-tabs, .tabs-container');
+
+            let newContext = control.html().replace(/(RQ\d+)/g, word => {
+                return '<a target="_blank" href="https://dms.360scm.com/dms/dev/dev_view_rq.html?menuid=119&reqid=' + word + '">' + word + '</a>';
+            });
+
+            newContext = newContext.replace(/(MP\d+)/g, word => {
+                return '<a target="_blank" href="https://dms.360scm.com/dms/cs/cs_view_malfunction.html?malfunction_id=' + word + '">' + word + '</a>';
+            });
+
+            control.html(newContext);
+        });
+    }
+}
 
 async function excavate(){
     const imgs = $(document.body).find("img");
