@@ -64,8 +64,12 @@ function replaceBadFileName(name) {
     return str;
 }
 
-function isRelativePath(src){
-    return !/^https?:\/\//i.test(src);
+function isRelativePath(url){
+    return !/^https?:\/\//i.test(url);
+}
+
+function isPic(url){
+    return /\.(gif|jpg|jpeg|png)/i.test(url);
 }
 
 function getAbsoluteUrl(url){

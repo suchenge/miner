@@ -33,8 +33,9 @@
         "js/resolver.js",
         "js/searcher.js",
         "js/excavator.js",
-        "js/popup.js",
-        "js/clean_up_popup.js",
+        "js/popups/popup.js",
+        "js/popups/clean_up_popup.js",
+        "js/popups/preview_popup.js",
         "js/downloader.js",
         "js/main.js"
       ]

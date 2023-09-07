@@ -7,24 +7,26 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
 let popup = new Popup("miner", "矿工");
 
 async function excavate(){
-    var imgs = $(document.body).find("img");
-    var srcContext = '';
+    const imgs = $(document.body).find("img");
+    const links = $(document.body).find("a");
 
-    for(let i = 0; i < imgs.length; i ++){
-        let src = $(imgs[i]).attr('src');
+    let urls = [];
 
-        if (!src) continue;
-
-        if (isRelativePath(src)){
-            src = getAbsoluteUrl(src);
+    let previewPopup = new PreviewPopup("miner-preview-popup", "清洁工");
+    previewPopup.create();
+    function addUrl(url){
+        if (url && isPic(url)){
+            if (isRelativePath(url)) url = getAbsoluteUrl(url);
+               if (url && urls.indexOf(url) === -1){
+                   previewPopup.write_line(url);
+                   urls.push(url);
+               }
         }
-
-        srcContext += src + '\n'
     }
 
-    let cleanupPopup = new CleanUpPopup("miner-clean-up-popup", "清洁工");
-    cleanupPopup.create();
-    cleanupPopup.write(srcContext);
+    Array.from(imgs).forEach(img => addUrl($(img).attr('src')));
+    Array.from(links).forEach(link => addUrl($(link).attr('href')));
+    Array.from(links).forEach(link => addUrl($(link).attr('rel')));
 }
 
 async function analysis(menuId) {
