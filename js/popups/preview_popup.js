@@ -145,8 +145,15 @@ class PreviewPopup {
                         cursor: pointer;
                     }
                     .miner-preview-popup .image_container img {
-                        height: calc(100%);
+                        height: calc(100% - 15px);
                         width: calc(100%);
+                    }
+                    .miner-preview-popup .miner-preview-popup-url {
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        font-size: 12px;
+                        color: darkgrey;
                     }
                     </style>`);
         let calcContainerLocation = (container) => {
@@ -207,7 +214,7 @@ class PreviewPopup {
 
     write_line(url){
         let image_container = $("<div id='miner-preview-popup-" + url.hashCode() + "' class='image_container'></div>");
-        let image_control = $("<img alt='" + url + "' src='" + url + "'/>");
+        let image_control = $("<img alt='" + url + "' src='" + url + "'/><div class='miner-preview-popup-url'>" + url + "</div>");
 
         let image_delete = $("<div hashCode='" + url.hashCode() + "' class='image_delete'>✖</div>");
         image_delete.click(e => {
