@@ -4,7 +4,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
     callback({method:"main listener callback", request});
 });
 
-replaceDmsRequest();
+//replaceDmsRequest();
 let popup = new Popup("miner", "矿工");
 
 function replaceDmsRequest(){
