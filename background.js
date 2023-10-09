@@ -45,7 +45,6 @@ chrome.downloads.onChanged.addListener(async item => {
     }
 });
 
-
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {
     switch (info.menuItemId){
         case "menuSearch":
@@ -83,49 +82,40 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
 
 let downloadItemInfos = new Map();
 
-const menus = [{
-    id: "menuMain",
-    visible: true,
-    title: "矿工",
-    contexts: ["all"],
-}, {
-    id: "menuDownload",
-    visible: true,
-    title: "🗜️ 开采",
-    parentId: "menuMain",
-    contexts: ["all"],
-}, {
-    id: "menuSearch",
-    visible: true,
-    title: "🛠️ 勘探",
-    parentId: "menuMain",
-    contexts: ["all"],
-}, {
-    id: "menuExcavate",
-    visible: true,
-    title: "⛏️ 挖掘",
-    parentId: "menuMain",
-    contexts: ["all"],
-}, {
-    type:"separator",
-    parentId: "menuMain",
-}, {
-    id: "menuClear",
-    visible: true,
-    title: "🪚 清理",
-    parentId: "menuMain",
-    contexts: ["all"],
-}/*
-    ,{
+const menus = [
+    {
+        id: "menuMain",
+        visible: true,
+        title: "矿工",
+        contexts: ["all"],
+    }, {
+        id: "menuDownload",
+        visible: true,
+        title: "🗜️ 开采",
+        parentId: "menuMain",
+        contexts: ["all"],
+    }, {
+        id: "menuSearch",
+        visible: true,
+        title: "🛠️ 勘探",
+        parentId: "menuMain",
+        contexts: ["all"],
+    }, {
+        id: "menuExcavate",
+        visible: true,
+        title: "⛏️ 挖掘",
+        parentId: "menuMain",
+        contexts: ["all"],
+    }, {
         type:"separator",
-        parentId: "menuMain", 
-    },{ 
-        id: "menuBurrow", 
-        visible: true, 
-        title: "☠ 挖掘", 
-        parentId: "menuMain", 
-        contexts: ["all"], 
-    }*/
+        parentId: "menuMain",
+    }, {
+        id: "menuClear",
+        visible: true,
+        title: "🪚 清理",
+        parentId: "menuMain",
+        contexts: ["all"],
+    }
 ];
 
 menus.forEach(menu => chrome.contextMenus.create(menu));
