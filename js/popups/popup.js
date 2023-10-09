@@ -216,15 +216,18 @@ class Popup {
             }
         }
     }
+
     hide() {
         this.infoContent.html("");
         this.container.hide();
         if (this.closeEvent) this.closeEvent(this);
     }
+
     show() {
         this.container.css("position","fixed");
         this.container.show();
     }
+    
     sign(hashCode, state){
         let line = this.lines.find(x => x.hashCode === hashCode);
         if (line) {
