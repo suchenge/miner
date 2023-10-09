@@ -7,7 +7,6 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
 let popup = new Popup("miner", "矿工");
 
 async function excavate(){
-    debugger;
     const imgs = $(document.body).find("img");
     const links = $(document.body).find("a");
 

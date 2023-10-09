@@ -15,8 +15,6 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
                     code: "(async() => await clean_up_sign('" + sender.tab.id + "', '" + bookmarkString + "'))()"
                 });
             });
-
-
         });
     }
 

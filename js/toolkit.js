@@ -39,7 +39,10 @@ function sendMessage(topic, id, messageBody, callback) {
 
 async function getBlackUrls(){
     return await new Promise((resolve, reject) => {
-        chrome.storage.local.get('blackUrls', data => resolve(data.blackUrls));
+        chrome.storage.local.get('blackUrls', data => {
+            if(data && data.blackUrls) resolve(data.blackUrls);
+            else resolve([]);
+        });
     });
 }
 
