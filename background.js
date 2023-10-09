@@ -80,6 +80,7 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
     }
 });
 
+//通过消息通知的下载文件信息
 let downloadItemInfos = new Map();
 
 const menus = [
