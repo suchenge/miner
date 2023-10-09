@@ -227,7 +227,7 @@ class Popup {
         this.container.css("position","fixed");
         this.container.show();
     }
-    
+
     sign(hashCode, state){
         let line = this.lines.find(x => x.hashCode === hashCode);
         if (line) {
@@ -298,6 +298,7 @@ class PopupLine{
     focus(){
         this.element.find("input[type='checkbox']").focus();
     }
+
     selected(){
         if (this.state === "selected"){
             this.state = "";
@@ -307,10 +308,12 @@ class PopupLine{
             this.signElement.show();
         }
     }
+
     loading(){
         this.signElement.hide()
         this.loadingElement.show();
     }
+    
     sign(state){
         this.loadingElement.hide();
 
