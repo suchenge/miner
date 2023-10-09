@@ -21,14 +21,6 @@ function request(url) {
                 resolve(result);
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                /*
-                alert(jqXHR.responseText);
-                alert(jqXHR.status);
-                alert(jqXHR.readyState);
-                alert(jqXHR.statusText);
-                alert(textStatus);
-                alert(errorThrown);
-                */
                 reject(new Error('返回错误'))
             }
         })
@@ -43,6 +35,12 @@ function sendMessage(topic, id, messageBody, callback) {
     };
     console.log({method: "sendMessage", request: request});
     chrome.runtime.sendMessage(request, callback);
+}
+
+async function getBlackUrls(){
+    return await new Promise((resolve, reject) => {
+        chrome.storage.local.get('blackUrls', data => resolve(data.blackUrls));
+    });
 }
 
 async function matchBookmark(url){

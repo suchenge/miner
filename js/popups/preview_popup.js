@@ -38,10 +38,11 @@ class PreviewPopup {
                         text-align: right;                     
                         padding-right: 10px;
                     }
-                    .miner-preview-popup .tabInfo .buttonInfo img{
+                    .miner-preview-popup .tabInfo .buttonInfo span{
                         width: 25px;
                         height: 25px;
                         cursor: pointer;
+                        margin-left: 20px;
                     }
                     .miner-preview-popup .infoContent{
                         padding: 10px 8px; 
@@ -177,7 +178,45 @@ class PreviewPopup {
 
         let tabInfo = $("<div class='tabInfo'></div>");
         let titleInfo = $("<div class='titleInfo'>" + this.title + " ×</div>");
-        let buttonInfo = $("<div class='buttonInfo'><img id='preview-copy-button' src='" + chrome.extension.getURL("images/copy.png") + "'></img></div>");
+
+        let appendToBlackListButton = $("<span>加入黑名单</span>");
+        appendToBlackListButton.click(() => {
+            let hashCodes = this.getSelectedHashCodes();
+
+            if (hashCodes.length <= 0) return;
+
+            let new_black_urls = [];
+
+            hashCodes.forEach(code => {
+                let div = $('#miner-preview-popup-' + code + '');
+                let url = div.find("img").attr('src');
+                new_black_urls.push(url);
+                div.remove();
+            });
+
+            sendMessage("appendBlackUrls",1, new_black_urls);
+        });
+
+        let deleteImageButton = $("<span>删除</span>");
+        deleteImageButton.click(() => this.getSelectedHashCodes().forEach(code => $('#miner-preview-popup-' + code + '').remove()));
+
+        let copyUrlButton = $("<span>复制链接</span>");
+        copyUrlButton.click(() => {
+            let content = '';
+            Array.from($('.image_container img')).forEach(img => content += $(img).attr('src') + '\n');
+
+            let control = $("#preview-popup-textarea");
+            control.val(content);
+            control.select();
+
+            document.execCommand('copy');
+        });
+
+        let buttonInfo = $("<div class='buttonInfo'></div>");
+
+        buttonInfo.append(appendToBlackListButton);
+        buttonInfo.append(deleteImageButton);
+        buttonInfo.append(copyUrlButton);
 
         tabInfo.append(titleInfo)
         tabInfo.append(buttonInfo);
@@ -191,21 +230,25 @@ class PreviewPopup {
 
         titleInfo.click(() => this.hide());
 
-        $(buttonInfo.find("img")).click(() => {
-            let content = '';
-            Array.from($('.image_container img')).forEach(img => content += $(img).attr('src') + '\n');
-            let control = $("#preview-popup-textarea");
-            control.val(content);
-            control.select();
-            document.execCommand('copy');
-        });
-
         let popup = $("<div></div>");
         popup.append(style);
         popup.append(this.container);
 
         $("body").append(popup);
-    }
+    };
+
+    getSelectedHashCodes() {
+        let result = [];
+        let selected_images = $(".image_container input:checkbox:checked");
+
+        Array.from(selected_images)
+            .forEach((images, index) => {
+                let hashCode = $(images).attr('hashCode');
+                result.push(hashCode);
+            });
+
+        return result;
+    };
 
     hide() {
         this.infoContent.html("");
@@ -213,16 +256,13 @@ class PreviewPopup {
     }
 
     write_line(url){
-        let image_container = $("<div id='miner-preview-popup-" + url.hashCode() + "' class='image_container'></div>");
-        let image_control = $("<img alt='" + url + "' src='" + url + "'/><div class='miner-preview-popup-url'>" + url + "</div>");
+        let url_hashCode = url.hashCode();
 
-        let image_delete = $("<div hashCode='" + url.hashCode() + "' class='image_delete'>✖</div>");
-        image_delete.click(e => {
-            let hashCode = $(e.delegateTarget).attr('hashCode')
-            $('#miner-preview-popup-' + hashCode + '').remove();
-        });
+        let image_container = $("<div id='miner-preview-popup-" + url_hashCode + "' class='image_container'></div>");
+        let image_checkbox = $("<input type='checkbox' hashCode='" + url_hashCode + "'>");
+        let image_control = $("<img alt='" + url + "' src='" + url + "'/>");
 
-        image_container.append(image_delete);
+        image_container.append(image_checkbox);
         image_container.append(image_control);
 
         this.infoContent.append(image_container);

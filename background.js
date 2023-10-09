@@ -2,16 +2,11 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
     if (request.topic === "download"){
         await chrome.downloads.download(request.message, async (item) => {
             downloadItemInfos.set(item, sender.tab.id);
-            /*
-            await chrome.tabs.sendMessage(sender.tab.id, {
-                topic:"download item",
-                id: request.id,
-                item: item
-            }, callback);
-            */
         });
+
         callback(request);
     }
+
     if (request.topic === "bookmark"){
         await chrome.bookmarks.search({url: request.message}, async (item) => {
             let bookmarkString = JSON.stringify(item);
@@ -23,6 +18,17 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
 
 
         });
+    }
+
+    if (request.topic === "appendBlackUrls"){
+        let blackUrls = await getBlackUrls();
+
+        if (blackUrls) blackUrls.push.apply(blackUrls, request.message);
+        else blackUrls = request.message;
+
+        blackUrls = [...new Set(blackUrls)];
+
+        await chrome.storage.local.set({blackUrls:blackUrls});
     }
 });
 

@@ -16,6 +16,7 @@
     "notifications",
     "contextMenus",
     "bookmarks",
+    "storage",
     "<all_urls>"
   ],
   "browser_action": {

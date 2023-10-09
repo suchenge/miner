@@ -7,6 +7,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
 let popup = new Popup("miner", "矿工");
 
 async function excavate(){
+    debugger;
     const imgs = $(document.body).find("img");
     const links = $(document.body).find("a");
 
@@ -15,35 +16,7 @@ async function excavate(){
     let previewPopup = new PreviewPopup("miner-preview-popup", "清洁工");
     previewPopup.create();
 
-    let black_urls = [
-        'noavatar_small.gif',
-        'avatar_middle.jpg',
-        'avatar_small.jpg',
-        'avatar_small.jpg',
-        'logo.png',
-        'pn_post.png',
-        'print.png',
-        'thread-prev.png',
-        'thread-next.png',
-        'userinfo.gif',
-        'noavatar_middle.gif',
-        'medal34.gif',
-        'medal36.gif',
-        'medal35.gif',
-        'medal37.gif',
-        'fj_btn.png',
-        'online_member.gif',
-        'arw_r.gif',
-        'rleft.gif',
-        'rright.gif',
-        'medal112.gif',
-        'fav.gif',
-        'forumlink.gif',
-        'apple-touch-icon.png',
-        'medal97.gif',
-        'loveliness.gif',
-        'tumblr_n05htgfdMS1spurnso8_400.gif'
-    ];
+    let black_urls = await getBlackUrls();
 
     function includes_black_urls(url){
         let includes = false;
@@ -59,9 +32,9 @@ async function excavate(){
     }
 
     function addUrl(url){
-        if (url && isPic(url) && !includes_black_urls(url)){
+        if (url && isPic(url)){
             if (isRelativePath(url)) url = getAbsoluteUrl(url);
-               if (url && urls.indexOf(url) === -1){
+               if (url && !includes_black_urls(url) && urls.indexOf(url) === -1){
                    previewPopup.write_line(url);
                    urls.push(url);
                }
