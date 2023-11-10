@@ -151,7 +151,7 @@ function jav114Link(){
             let linkElement = $(link);
             let keyword = linkElement.text().trim();
 
-            linkElement.attr('href', '#');
+            linkElement.removeAttr('href');
             linkElement.click(() => {
                 sendMessage("searchKeyword", 0, {keyword: keyword, url:url}, () => {});
             });
