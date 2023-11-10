@@ -2,6 +2,8 @@ class BaseSearcher {
     constructor(id) {
         this.id = id;
     }
+
+    active = false;
     async getUrl() {
 
     }
@@ -9,16 +11,36 @@ class BaseSearcher {
         if (this.id){
             let url = await this.getUrl();
             if (url){
-                await chrome.tabs.create({ url: await this.getUrl(), active: false });
+                await chrome.tabs.create({ url: await this.getUrl(), active: this.active });
             }
         }
     }
+}
+
+class Scm360Searcher extends BaseSearcher {
+    constructor(id) {
+        super(id);
+    }
+
+    active = true;
+    async getUrl(){
+        let url;
+        if (this.id.startsWith('RQ'))
+            url = 'https://dms.360scm.com/dms/dev/dev_view_rq.html?menuid=119&reqid=' + this.id;
+        else if (this.id.startsWith('MP')){
+            url = 'https://dms.360scm.com/dms/cs/cs_view_malfunction.html?malfunction_id=' + this.id;
+        }
+
+        return url;
+    }
+
 }
 
 class JavdbSearcher extends BaseSearcher {
     constructor(id) {
         super(id)
     }
+
     async getUrl() {
         let baseUrl = "https://javdb.com/";
         let searchUrl = baseUrl + "search?q=" + this.id + "&f=all";
@@ -32,11 +54,10 @@ class JavdbSearcher extends BaseSearcher {
     }
 }
 
-class JavhooSearcher extends BaseSearcher {
-    constructor(id) {
-        super(id)
-    }
-    async getUrl() {
-        return "https://www.javhoo.org/ja/av/" + this.id;
+async function searchKeyword(url, keyword){
+    if (url && keyword) {
+        if (url.includes('dms.360scm.com') || url.includes('devops.aliyun.com'))
+            await new Scm360Searcher(keyword).open();
+        else await new JavdbSearcher(keyword).open();
     }
 }

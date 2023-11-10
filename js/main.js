@@ -142,30 +142,14 @@ function setTestXa360scmCookie(){
     }
 }
 
-function replaceDmsRequest(){
-    let url = window.location.href;
-    let replaced = false;
-    if (url.includes('dms.360scm.com')){
-        $('body').click(() => {
-            if (replaced) return;
-            replaced = true;
-
-            let control = $('.easyui-tabs, .tabs-container');
-
-            let newContext = control.html().replace(/(RQ\d+)/g, word => {
-                return '<a target="_blank" href="https://dms.360scm.com/dms/dev/dev_view_rq.html?menuid=119&reqid=' + word + '">' + word + '</a>';
-            });
-
-            newContext = newContext.replace(/(MP\d+)/g, word => {
-                return '<a target="_blank" href="https://dms.360scm.com/dms/cs/cs_view_malfunction.html?malfunction_id=' + word + '">' + word + '</a>';
-            });
-
-            control.html(newContext);
-        });
-    }
-}
-
 (function load(){
+    $(document).keydown(function(event) {
+        if (event.altKey && event.shiftKey && event.keyCode === 80) {
+            let locationUrl = window.location.href;
+            let keyword = window.getSelection().toString();
+            sendMessage("searchKeyword", 0, {keyword: keyword, url:locationUrl}, () => {});
+        }
+    });
+    
     setTestXa360scmCookie();
-    //replaceDmsRequest
 })();

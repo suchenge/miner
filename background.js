@@ -28,6 +28,10 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
 
         await chrome.storage.local.set({blackUrls:blackUrls});
     }
+
+    if (request.topic === "searchKeyword"){
+        await searchKeyword(request.message.url, request.message.keyword);
+    }
 });
 
 chrome.downloads.onChanged.addListener(async item => {
@@ -41,26 +45,15 @@ chrome.downloads.onChanged.addListener(async item => {
                 code: "(async() => await sign('" + tabId + "', '" + itemString + "'))()"
             });
         });
-
     }
 });
+
 
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {
     switch (info.menuItemId){
         case "menuSearch":
-            if (tab.url.includes('dms.360scm.com') || tab.url.includes('devops.aliyun.com')){
-                var url = null;
-                var keyword = info.selectionText.toUpperCase();
-                if (keyword.startsWith('RQ'))
-                    url = 'https://dms.360scm.com/dms/dev/dev_view_rq.html?menuid=119&reqid=' + keyword;
-                else if (keyword.startsWith('MP')){
-                    url = 'https://dms.360scm.com/dms/cs/cs_view_malfunction.html?malfunction_id=' + keyword;
-                }
-                if (url) await chrome.tabs.create({ url: url, active: false });
-            }
-            else{
-                await new JavdbSearcher(info.selectionText).open();
-            }
+            debugger;
+            await searchKeyword(tab.url, info.selectionText);
             break;
         case "menuDownload":
             await chrome.tabs.executeScript(tab.id, {
