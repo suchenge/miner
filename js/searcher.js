@@ -1,6 +1,6 @@
 class BaseSearcher {
     constructor(id) {
-        this.id = id;
+        this.id = id.trim();
     }
 
     active = false;

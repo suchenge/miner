@@ -142,7 +142,24 @@ function setTestXa360scmCookie(){
     }
 }
 
-(function load(){
+function jav114Link(){
+    let url = window.location.href;
+    if(url.includes('141jav.com')){
+        let linkList = $('.title, .is-4, .is-spaced').find('a');
+        for (let link of linkList){
+
+            let linkElement = $(link);
+            let keyword = linkElement.text().trim();
+
+            linkElement.attr('href', '#');
+            linkElement.click(() => {
+                sendMessage("searchKeyword", 0, {keyword: keyword, url:url}, () => {});
+            });
+        }
+    }
+}
+
+function searchShortcutKey(){
     $(document).keydown(function(event) {
         if (event.altKey && event.shiftKey && event.keyCode === 80) {
             let locationUrl = window.location.href;
@@ -150,6 +167,10 @@ function setTestXa360scmCookie(){
             sendMessage("searchKeyword", 0, {keyword: keyword, url:locationUrl}, () => {});
         }
     });
-    
+}
+
+(function load(){
+    searchShortcutKey()
     setTestXa360scmCookie();
+    jav114Link();
 })();
