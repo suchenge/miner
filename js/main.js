@@ -153,23 +153,9 @@ function jav114Link(){
                 if(keyword && href.includes("torrent")){
                     sendMessage("searchKeyword", 0, {keyword: keyword, url:url}, () => {});
                     element.removeAttr('href');
-                    return;
                 }
             }
         }, "a");
-        /*
-        let linkList = $('.title, .is-4, .is-spaced').find('a');
-        for (let link of linkList){
-
-            let linkElement = $(link);
-            let keyword = linkElement.text().trim();
-
-            linkElement.removeAttr('href');
-            linkElement.click(() => {
-                sendMessage("searchKeyword", 0, {keyword: keyword, url:url}, () => {});
-            });
-        }
-        */
     }
 }
 
