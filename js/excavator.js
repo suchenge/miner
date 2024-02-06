@@ -49,6 +49,30 @@ class BaseExcavator{
     }
 }
 
+class SehuatangExcavator extends BaseExcavator{
+    constructor(url){
+        super(url)
+    }
+    getOtherPageUrls(html){
+        return []
+    }
+    getTitle(html){
+        return html.find("span[id='thread_subject']").text();
+    }
+    getStills(html){
+        let stills = [];
+
+        let imgElement = html.find("img");
+        if (imgElement) {
+            for (const element of imgElement) {
+                let src = $(element).attr("zoomfile");
+                if (src) stills.push(src.trim());
+            }
+        }
+        return stills;
+    }
+}
+
 class JpmnbExcavator extends BaseExcavator{
     constructor(url) {
         super(url);
