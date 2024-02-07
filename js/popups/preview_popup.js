@@ -212,11 +212,33 @@ class PreviewPopup {
             document.execCommand('copy');
         });
 
+        let downloadUrlButton = $("<span>下载</span>")
+        downloadUrlButton.click(() => {
+            Array.from($('.image_container img')).forEach((img, index) => {
+                let url = $(img).attr('src');
+                let urlGroup = url.split("/");
+                let nameGroup = urlGroup[urlGroup.length - 1].split(".");
+                let type = nameGroup[nameGroup.length - 1];
+                let path = $(".titleInfo").text().replace("×","").trim() + '/' + index + '.' + type;
+                console.log(path);
+                
+                sendMessage("download", index, {
+                    url: url,
+                    filename: path,
+                    method: "GET",
+                    conflictAction: "overwrite",
+                    saveAs: false,
+                }, response => {});
+            
+            });            
+        });
+
         let buttonInfo = $("<div class='buttonInfo'></div>");
 
         buttonInfo.append(appendToBlackListButton);
         buttonInfo.append(deleteImageButton);
         buttonInfo.append(copyUrlButton);
+        buttonInfo.append(downloadUrlButton);
 
         tabInfo.append(titleInfo)
         tabInfo.append(buttonInfo);

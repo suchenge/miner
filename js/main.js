@@ -11,8 +11,14 @@ async function excavate(){
     const links = $(document.body).find("a");
 
     let urls = [];
+    let current_url = window.location.href;
 
-    let previewPopup = new PreviewPopup("miner-preview-popup", "清洁工");
+    let title = "清洁工";
+    if (current_url.includes("sehuatang")){
+        title = $("#thread_subject").text();
+    }
+
+    let previewPopup = new PreviewPopup("miner-preview-popup", title);
     previewPopup.create();
 
     let black_urls = await getBlackUrls();
@@ -39,10 +45,14 @@ async function excavate(){
                }
         }
     }
-
-    Array.from(imgs).forEach(img => addUrl($(img).attr('src')));
-    Array.from(links).forEach(link => addUrl($(link).attr('href')));
-    Array.from(links).forEach(link => addUrl($(link).attr('rel')));
+    
+    if(current_url.includes('sehuatang')){
+        Array.from(imgs).forEach(img => addUrl($(img).attr('zoomfile')));
+    }else{
+        Array.from(imgs).forEach(img => addUrl($(img).attr('src')));
+        Array.from(links).forEach(link => addUrl($(link).attr('href')));
+        Array.from(links).forEach(link => addUrl($(link).attr('rel')));
+    }
 }
 
 async function analysis(menuId) {
@@ -106,7 +116,10 @@ function getMiner(url){
         },{
             name: "javdb",
             miner: () => new JavdbResolver(url)
-        },
+        },{
+            name: "sehuatang",
+            miner: () => new SehuatangExcavator(url)
+        }
     ]
     
     for(const setting of settings){
@@ -153,7 +166,6 @@ function jav114Link(){
                 if(keyword && href.includes("torrent")){
                     sendMessage("searchKeyword", 0, {keyword: keyword, url:url}, () => {});
                     element.removeAttr('href');
-                    return;
                 }
             }
         }, "a");
