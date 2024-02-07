@@ -14,7 +14,9 @@ class BaseExcavator{
         console.log("first page still count" + currentPageStills.length);
 
         if (currentPageStills && currentPageStills.length > 0){
-            currentPageStills.forEach(still => stills.push(still));
+            currentPageStills.forEach(still => {
+                if (!stills.includes(still)) stills.push(still);
+            });
         }
 
         console.log(otherPageUrls);
@@ -30,7 +32,9 @@ class BaseExcavator{
                 console.log(url + "still count" + urlStills.length);
 
                 if (urlStills && urlStills.length > 0){
-                    urlStills.forEach(still => stills.push(still));
+                    urlStills.forEach(still => {
+                        if (!stills.includes(still)) stills.push(still);
+                    });
                 }
             }
         }
@@ -109,7 +113,7 @@ class Gmd9999Excavator extends BaseExcavator{
         return urls;
     }
     getTitle(html){
-        return html.find("h3[class='page-title']").text().trim();
+        return html.find("h3[class='page-title']").text().replace("收藏","").trim();
     }
     getStills(html){
         let stills = [];
