@@ -170,12 +170,6 @@ class Popup {
 
         $(".titleInfo").click(() => this.hide());
         $(".downloadButton img").click(() => {
-
-            this.lineLength = Array.from(this.lines).filter(x => x.state === "selected").length;
-
-            this.counter.show();
-            this.counter.text(this.lineLength);
-
             this.lines.forEach(line => {
                 if (line.state === "selected"){
                     line.loading();
@@ -234,6 +228,11 @@ class Popup {
                 if (value instanceof Array) value.forEach(valueLine => this.writeLine(valueLine));
                 else this.writeLine(value);
             }
+
+            this.lineLength = Array.from(this.lines).filter(x => x.state === "selected").length;
+
+            this.counter.show();
+            this.counter.text(this.lineLength);
         }
     }
 
