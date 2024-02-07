@@ -11,20 +11,32 @@ class BaseExcavator{
         let currentPageStills = this.getStills(html);
         let otherPageUrls = this.getOtherPageUrls(html);
 
+        console.log("first page still count" + currentPageStills.length);
+
         if (currentPageStills && currentPageStills.length > 0){
             currentPageStills.forEach(still => stills.push(still));
         }
 
+        console.log(otherPageUrls);
+
         if (otherPageUrls && otherPageUrls.length > 0){
             for(const url of otherPageUrls){
+                console.log("get other page" + url);
+
                 let urlResponse = await request(url);
                 let urlHtml = $(urlResponse);
                 let urlStills = this.getStills(urlHtml);
+
+                console.log(url + "still count" + urlStills.length);
+
                 if (urlStills && urlStills.length > 0){
                     urlStills.forEach(still => stills.push(still));
                 }
             }
         }
+
+        console.log("add other page still count" + stills.length);
+
         return {
             title: title.trim(),
             stills: FileInfo.getFiles(stills, title, file => (file.index + "").padStart(5, "0")),
@@ -67,6 +79,48 @@ class SehuatangExcavator extends BaseExcavator{
             for (const element of imgElement) {
                 let src = $(element).attr("zoomfile");
                 if (src) stills.push(src.trim());
+            }
+        }
+        return stills;
+    }
+}
+
+class Gmd9999Excavator extends BaseExcavator{
+    constructor(url){
+        super(url)
+    }
+    getOtherPageUrls(html){
+        let urls = [];
+        let pageLinks = html.find("a[class='page-link']");
+
+        if (pageLinks){
+            for (const pageLink of pageLinks){
+                let pageUrl = $(pageLink).attr("href");
+                pageUrl = getAbsoluteUrlByHref(pageUrl);
+
+                if (pageUrl.includes("?page=1")) continue;
+                if (urls.includes(pageUrl)) continue;
+
+                console.log(pageUrl);
+                urls.push(pageUrl);
+            }
+        }
+
+        return urls;
+    }
+    getTitle(html){
+        return html.find("h3[class='page-title']").text().trim();
+    }
+    getStills(html){
+        let stills = [];
+
+        let imgElement = html.find("a[class='col-6 col-md-4 col-xxl-3 float-start image-item']");
+        if (imgElement) {
+            for (const element of imgElement) {
+                let src = $(element).attr("href");
+                if (src) {
+                    stills.push(src.trim());
+                }
             }
         }
         return stills;

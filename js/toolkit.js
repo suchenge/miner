@@ -80,3 +80,9 @@ function getAbsoluteUrl(url){
     img.src = null; // 取消请求
     return url;
 }
+
+function getAbsoluteUrlByHref(url){
+    let newA = document.createElement("a");
+    newA.href = url;
+    return newA.href;
+}
