@@ -8,6 +8,8 @@ class Popup {
 
         this.downloadEvent = null;
         this.closeEvent = null;
+        this.counter = null;
+        this.lineLength = 0;
     }
     create() {
         let style = $(`<style scoped>
@@ -118,6 +120,14 @@ class Popup {
                         background: #ccc; 
                         border-radius: 5px;
                     }
+                    .miner .counter{
+                        position: relative;
+                        top: -150px;
+                        float: right;
+                        font-size: 140px;
+                        padding-right: 10px;
+                        font-weight: bold;
+                    }
                     </style>`);
 
         let calcContainerLocation = (container) => {
@@ -151,11 +161,21 @@ class Popup {
         popup.append(style);
         popup.append(this.container);
 
+        this.counter = $("<div class='counter'></div>");
+        this.counter.hide();
+        this.container.append(this.counter);
+
         $("body").append(popup);
         $(window).resize(() => calcContainerLocation(this.container));
 
         $(".titleInfo").click(() => this.hide());
         $(".downloadButton img").click(() => {
+
+            this.lineLength = Array.from(this.lines).filter(x => x.state === "selected").length;
+
+            this.counter.show();
+            this.counter.text(this.lineLength);
+
             this.lines.forEach(line => {
                 if (line.state === "selected"){
                     line.loading();
@@ -233,6 +253,8 @@ class Popup {
         if (line) {
             line.focus();
             line.sign(state);
+            this.lineLength -= 1;
+            this.counter.text(this.lineLength);
         }
     }
 }
@@ -317,7 +339,10 @@ class PopupLine{
     sign(state){
         this.loadingElement.hide();
 
-        if (state) this.signElement.css("color", "#3f51b5");
+        if (state) {
+            this.signElement.css("color", "#3f51b5");
+            //setTimeout(() => this.element.hide(), 500);
+        }
         else {
             this.signElement.text("✘ ");
             this.signElement.css("color", "red");
