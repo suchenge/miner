@@ -65,6 +65,30 @@ class BaseExcavator{
     }
 }
 
+class Sis001Excavator extends BaseExcavator{
+    constructor(url){
+        super(url)
+    }
+    getTitle(html){
+        return html.find("h2").text();
+    }
+    getStills(html){
+        let stills = [];
+
+        let imgElements = html.find("img");
+        if (imgElements) {
+            for (const element of imgElements) {
+                var imgElement = $(element);
+                var imgOnload = imgElement.attr("onload");
+                if (imgOnload && imgOnload.includes("attachimg")){
+                    stills.push(imgElement.attr("src").trim());
+                }
+            }
+        }
+        return stills;
+    }
+}
+
 class SehuatangExcavator extends BaseExcavator{
     constructor(url){
         super(url)
