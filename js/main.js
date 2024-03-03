@@ -122,6 +122,9 @@ function getMiner(url){
         },{
             name: "gmd9999",
             miner: () => new Gmd9999Excavator(url)
+        },{
+            name: "1kdj5",
+            miner: () => new SehuatangExcavator(url)
         }
     ]
     
