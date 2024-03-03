@@ -51,20 +51,23 @@ chrome.downloads.onChanged.addListener(async item => {
 
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {
     switch (info.menuItemId){
+        //勘探
         case "menuSearch":
-            debugger;
             await searchKeyword(tab.url, info.selectionText);
             break;
+        //开采
         case "menuDownload":
             await chrome.tabs.executeScript(tab.id, {
                 code: "(async() => await analysis('" + info.menuItemId + "'))()"
             });
             break;
+        //清理
         case "menuClear":
             await chrome.tabs.executeScript(tab.id, {
                 code: "(async() => await clean_up())()"
             });
             break;
+        //挖掘
         case "menuExcavate":
             await chrome.tabs.executeScript(tab.id, {
                 code: "(async() => await excavate())()"
