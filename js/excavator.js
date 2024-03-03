@@ -70,7 +70,7 @@ class Sis001Excavator extends BaseExcavator{
         super(url)
     }
     getTitle(html){
-        return html.find("h2").text();
+        return html.find("h2").eq(1).text();
     }
     getStills(html){
         let stills = [];
