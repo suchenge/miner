@@ -17,6 +17,7 @@ class FileInfo extends BaseFileInfo{
             let host = window.location.host;
             if (window.location.href.startsWith("https")) head = "https"
             this.url =  head + "://" + host + "/" + url;
+            this.url = getAbsoluteUrl(url);
         }
 
         if (url) {

@@ -33,7 +33,6 @@ class Scm360Searcher extends BaseSearcher {
 
         return url;
     }
-
 }
 
 class JavdbSearcher extends BaseSearcher {

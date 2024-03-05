@@ -32,6 +32,10 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
     if (request.topic === "searchKeyword"){
         await searchKeyword(request.message.url, request.message.keyword);
     }
+
+    if (request.topic === "openUrl"){
+        await openUrl(request.message.url);
+    }
 });
 
 chrome.downloads.onChanged.addListener(async item => {

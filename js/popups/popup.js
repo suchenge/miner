@@ -65,6 +65,7 @@ class Popup {
                         color: #3f51b5;
                         font-size: 20px;
                         margin-bottom: 0;
+                        clear:both;
                     }
                     .miner .title::before { 
                         content: "●"; 
@@ -91,6 +92,12 @@ class Popup {
                         border-left-width: 1px;
                         border-left-style: solid;
                         word-wrap: break-word;
+                        box-sizing: revert;
+                        //height: 30px;
+                        clear: both;
+                    }
+                    .miner .line .file{
+                        height: 30px;
                     }
                     .miner .line:first-child{
                         padding-top:5px;
@@ -98,8 +105,18 @@ class Popup {
                     .miner .line:last-child{
                         padding-bottom: 5px;
                     }
-                    .miner .line span{
+                    .miner .line .status{
                         cursor: pointer;
+                        float: left;
+                        width: 20px;
+                    }
+                    .miner .line .url{
+                        overflow: hidden; 
+                        text-overflow: ellipsis; 
+                        -o-text-overflow: ellipsis;
+                        white-space:nowrap;
+                        width: calc(100% - 25px);
+                        float: right;
                     }
                     .miner .line img{
                         float: left;
@@ -183,6 +200,7 @@ class Popup {
         this.isDefaultSelectedEvent = null;
         this.isCanBeSelectEvent = null;
         this.downloadEvent = null;
+        this.lineLength = 0;
     }
     download(event){
         this.downloadEvent = event;
@@ -193,13 +211,19 @@ class Popup {
     isDefaultSelected(event){
         this.isDefaultSelectedEvent = event;
     }
+    selectedLine(event){
+        if (event === "add") this.lineLength += 1;
+        else this.lineLength -= 1;
+
+        this.counter.text(this.lineLength);
+    }
 
     writeLine(content){
         let value = "无法获取到内容";
 
         if (content && content.toString() !== undefined) value = content;
 
-        let popupLine = new PopupLine(value, this.isCanBeSelectEvent, this.isDefaultSelectedEvent);
+        let popupLine = new PopupLine(value, this.isCanBeSelectEvent, this.isDefaultSelectedEvent, this);
         let line = popupLine.get();
 
         this.lines.push(popupLine);
@@ -229,10 +253,7 @@ class Popup {
                 else this.writeLine(value);
             }
 
-            this.lineLength = Array.from(this.lines).filter(x => x.state === "selected").length;
-
             this.counter.show();
-            this.counter.text(this.lineLength);
         }
     }
 
@@ -252,22 +273,22 @@ class Popup {
         if (line) {
             line.focus();
             line.sign(state);
-            this.lineLength -= 1;
-            this.counter.text(this.lineLength);
         }
     }
 }
 
 class PopupLine{
-    constructor(content, isCanBeSelectEvent, isDefaultSelectedEvent) {
+    constructor(content, isCanBeSelectEvent, isDefaultSelectedEvent, popup) {
         this.content = content;
         this.element = null;
         this.signElement = null;
         this.state = "";
         this.isCanBeSelectEvent = isCanBeSelectEvent;
         this.isDefaultSelected = isDefaultSelectedEvent;
+        this.popup = popup;
         this.hashCode = content["hashCode"] ?? this.content.hashCode();
     }
+
     addAttrs(element){
         if (element){
             if (this.content instanceof Object){
@@ -277,42 +298,45 @@ class PopupLine{
             }
         }
     }
+
     addAttr(element, key, value){
         if (element && value && typeof value === "string"){
             element.attr("miner-" + key, value);
         }
     }
+
     get() {
-        this.signElement = $("<span>✔ </span>");
-        this.signElement.hide();
-
-        this.loadingElement = $("<img src='" + chrome.extension.getURL("images/smail-loading.gif") + "'/>");
-        this.loadingElement.hide();
-
         this.element = $("<div class='line'></div>");
-        this.addAttrs(this.element);
-
-        let defaultSelected = this.isDefaultSelected(this.content);
 
         if (this.isCanBeSelectEvent(this.content)) {
-            this.element.append(this.signElement);
-            this.element.append(this.loadingElement);
+            this.element.addClass("file");
+            
+            let defaultSelected = this.isDefaultSelected(this.content);
+            let selectLineElement = $("<div></div");
+
+            this.signElement = $("<span class='status'>◎</span>");
+            this.signElement.click(() => this.selected());
+            
+            let urlElement = $("<span class='url'>" + this.content.url + "</span>");
+            
+            urlElement.click(() => {
+                let url = this.content.url;
+                console.log(url);
+                sendMessage("openUrl", "", {
+                    url: url
+                }, response => {});
+            });
+
+            selectLineElement.append(this.signElement);
+            selectLineElement.append(urlElement);
+
+            this.element.append(selectLineElement);
             this.element.append("<input type='checkbox'/>");
 
-            if (!defaultSelected) {
-                this.element.click(() => this.selected());
-                this.element.hover(
-                    () => {
-                        if (this.state === "") this.signElement.show()
-                    },
-                    () => {
-                        if (this.state === "") this.signElement.hide()
-                    }
-                );
-            }else this.selected();
+            if (defaultSelected) this.selected()
         }
-
-        this.element.append("<span>" + this.content.toString() + "</span>");
+        else this.element.append("<span>" + this.content.toString() + "</span>");
+        
         return this.element;
     }
 
@@ -323,29 +347,36 @@ class PopupLine{
     selected(){
         if (this.state === "selected"){
             this.state = "";
-            this.signElement.hide();
+            this.signElement.text("");
+            this.signElement.text("◎");
+            this.popup.selectedLine("subtract")
         }else if (this.state === ""){
             this.state = "selected";
-            this.signElement.show();
+            this.signElement.text("");
+            this.signElement.text("✔");
+            this.popup.selectedLine("add")
         }
     }
 
     loading(){
-        this.signElement.hide()
-        this.loadingElement.show();
+        this.signElement.text("");
+        this.signElement.append("<img src='" + chrome.extension.getURL("images/smail-loading.gif") + "'/>");
     }
     
     sign(state){
-        this.loadingElement.hide();
-
         if (state) {
+            this.signElement.html("");
+            this.signElement.text("✔");
             this.signElement.css("color", "#3f51b5");
+            this.popup.selectedLine("subtract");
             //setTimeout(() => this.element.hide(), 500);
         }
         else {
-            this.signElement.text("✘ ");
+            this.signElement.text("");
+            this.signElement.text("✘");
             this.signElement.css("color", "red");
         }
+
         this.signElement.show();
     }
 }

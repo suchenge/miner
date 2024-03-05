@@ -86,3 +86,7 @@ function getAbsoluteUrlByHref(url){
     newA.href = url;
     return newA.href;
 }
+
+async function openUrl(url){
+    await chrome.tabs.create({ url: url, active: false });
+}
