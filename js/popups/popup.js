@@ -74,7 +74,7 @@ class Popup {
                     }
                     .miner .title::before { 
                         content: "●"; 
-                        font-size: 40px;
+                        font-size: 25px;
                         line-height: 15px;
                         color: #3f51b5;
                         margin-right: 5px;
@@ -82,15 +82,16 @@ class Popup {
                     }
                     .miner .title::after {
                         content: " »";
-                        font-size: 20px;
+                        font-size: 25px;
                         line-height: 15px;
                         color: #3f51b5;
                         margin-right: 5px;
                         box-sizing: revert;
                     }
-                    .miner .line{
-                        font-size: 14px;
-                        margin-left: 12px;
+                    .miner .lineContainer{
+                        margin-top: -5px;
+                        margin-bottom: -3px;
+                        margin-left: 7px;
                         padding-left: 20px;
                         line-height: 30px;
                         border-left-color: #999999;
@@ -98,6 +99,10 @@ class Popup {
                         border-left-style: solid;
                         word-wrap: break-word;
                         box-sizing: revert;
+                    }
+                    .miner .line{
+                        font-size: 14px;
+                        
                         clear: both;
                     }
                     .miner .file{
@@ -107,7 +112,7 @@ class Popup {
                         padding-top:5px;
                     }
                     .miner .line:last-child{
-                        padding-bottom: 5px;
+                        padding-bottom: 10px;
                     }
                     .miner .line .status{
                         cursor: pointer;
@@ -249,8 +254,12 @@ class Popup {
 
         this.lastLineContainer = $("<div class='lineContainer'></div>");
 
-        this.infoContent.append($("<div class='title'>" + title + "</div>"));
+        this.infoContent.append($("<div class='title'>" + this.titleFormat(title) + "</div>"));
         this.infoContent.append(this.lastLineContainer);
+    }
+
+    titleFormat(title){
+        return title.charAt(0).toUpperCase() + title.slice(1)
     }
 
     async write(getContentEvent){
@@ -266,6 +275,18 @@ class Popup {
             }
 
             this.counter.show();
+
+            let infoContentHeight = this.infoContent.outerHeight(true);
+            let children = this.infoContent.children();
+            let lastChildren = children[children.length - 1];
+            let childrenHeight = 0;
+            Array.from(children).forEach(x => childrenHeight += $(x).outerHeight(true));
+
+            let lastChildrenHeight = infoContentHeight - childrenHeight;
+            if (lastChildrenHeight > 0){
+                let lastElement = $(lastChildren);
+                lastElement.height(lastChildrenHeight + lastElement.outerHeight(true) + 15);
+            }
         }
     }
 
