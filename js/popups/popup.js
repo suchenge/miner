@@ -28,7 +28,6 @@ class Popup {
                         text-align: left; 
                         background-color: #E5F2F2;
                         border-radius: 5px;
-                        height: 35px;
                     }
                     .miner .tabInfo div{
                         background-color: #E5F2F2;
@@ -50,14 +49,20 @@ class Popup {
                         cursor: pointer;
                     }
                     .miner .infoContent{
-                        padding: 10px 8px; 
+                        padding-top: 10px;
+                        padding-left: 8px;
+                        padding-right: 8px;
                         overflow-y: auto; 
                         overflow-x: hidden; 
-                        height: calc(100% - 55px);
+                        height: calc(100% - 50px);
                         clear: both;
                         font-family: Helvetica, arial, freesans, clean, sans-serif;
                         font-size: 14px;
                         color: #333;
+                    }
+                    .miner .titleContainer{
+                        float: left;
+                        width: calc(100% - 35px);
                     }
                     .miner .title{
                         height: 20px;
@@ -93,10 +98,9 @@ class Popup {
                         border-left-style: solid;
                         word-wrap: break-word;
                         box-sizing: revert;
-                        //height: 30px;
                         clear: both;
                     }
-                    .miner .line .file{
+                    .miner .file{
                         height: 30px;
                     }
                     .miner .line:first-child{
@@ -111,12 +115,17 @@ class Popup {
                         width: 20px;
                     }
                     .miner .line .url{
+                        cursor: pointer;
                         overflow: hidden; 
                         text-overflow: ellipsis; 
                         -o-text-overflow: ellipsis;
                         white-space:nowrap;
                         width: calc(100% - 25px);
                         float: right;
+                    }
+                    .miner .line .url:hover{
+                        color: blue;
+                        text-decoration: underline;
                     }
                     .miner .line img{
                         float: left;
@@ -138,10 +147,8 @@ class Popup {
                         border-radius: 5px;
                     }
                     .miner .counter{
-                        position: relative;
-                        top: -150px;
+                        font-size: 20px;
                         float: right;
-                        font-size: 140px;
                         padding-right: 10px;
                         font-weight: bold;
                     }
@@ -162,8 +169,17 @@ class Popup {
         this.container.draggable();
         calcContainerLocation(this.container);
 
+        this.counter = $("<div class='counter'></div>");
+        this.counter.hide();
+
         let tabInfo = $("<div class='tabInfo'></div>");
-        tabInfo.append($("<div class='titleInfo'>" + this.title + " ×</div>"));
+        let titleContainer = $("<div class='titleContainer'></div>");
+        let titleInfo = $("<div class='titleInfo'>" + this.title + " ×</div>");
+
+        titleContainer.append(titleInfo);
+        titleContainer.append(this.counter);
+
+        tabInfo.append(titleContainer);
         tabInfo.append($("<div class='downloadButton'><img src='" + chrome.extension.getURL("images/download-2.png") + "'></img></div>"));
 
         this.loadingElement = $("<img src='" + chrome.extension.getURL("images/loading.gif") + "'/>");
@@ -177,10 +193,6 @@ class Popup {
         let popup = $("<div></div>");
         popup.append(style);
         popup.append(this.container);
-
-        this.counter = $("<div class='counter'></div>");
-        this.counter.hide();
-        this.container.append(this.counter);
 
         $("body").append(popup);
         $(window).resize(() => calcContainerLocation(this.container));
