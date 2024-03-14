@@ -192,8 +192,12 @@ function searchShortcutKey(){
 }
 
 function jypcLink(){
-    let url = window.location.href;
-    if (url.includes('jypc1.com')){
+    let mainUrl = window.location.href;
+    if (mainUrl.includes('jypc1.com')){
+        let domain = new URL(mainUrl);
+        let domainUrl = domain.origin;
+
+        console.log(domainUrl);
         let links = $("div[class='C-InfoCard G-Field']");
         Array.from(links).forEach(link => {
             let url = null;
@@ -203,12 +207,12 @@ function jypcLink(){
             let clickEvent = current.attr("onclick");
             let id = current.parent().attr("data-id");
 
-            if (id) url = "../" + id + ".html";
+            if (id) url = domainUrl + "/" + id + ".html";
             else url = clickEvent.replace("location.href=", "")
                                  .replace("'","")
                                  .replace("'","");
 
-            url = getAbsoluteUrlByHref(url);
+            //url = getAbsoluteUrlByHref(url);
             titleElement.click(e => {
                 console.log(url);
                 sendMessage("openUrl", "", {
