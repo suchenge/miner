@@ -191,8 +191,38 @@ function searchShortcutKey(){
     });
 }
 
+function jypcLink(){
+    let url = window.location.href;
+    if (url.includes('jypc1.com')){
+        let links = $("div[class='C-InfoCard G-Field']");
+        Array.from(links).forEach(link => {
+            let url = null;
+            let current = $(link);
+            let titleElement = current.find('.Title');
+            let title = titleElement.text();
+            let clickEvent = current.attr("onclick");
+            let id = current.parent().attr("data-id");
+
+            if (id) url = "../" + id + ".html";
+            else url = clickEvent.replace("location.href=", "")
+                                 .replace("'","")
+                                 .replace("'","");
+
+            url = getAbsoluteUrlByHref(url);
+            titleElement.click(e => {
+                console.log(url);
+                sendMessage("openUrl", "", {
+                    url: url
+                }, response => {});
+                e.stopPropagation();
+            })
+        });
+    }
+}
+
 (function load(){
     searchShortcutKey()
     setTestXa360scmCookie();
     jav114Link();
+    jypcLink();
 })();

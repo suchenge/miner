@@ -81,10 +81,17 @@ function getAbsoluteUrl(url){
     return url;
 }
 
-function getAbsoluteUrlByHref(url){
+function createLink(url){
     let newA = document.createElement("a");
     newA.href = url;
-    return newA.href;
+    return newA;
+}
+
+function getAbsoluteUrlByHref(url){
+    let newA = createLink(url);
+    let href = newA.href;
+    newA.remove();
+    return href;
 }
 
 async function openUrl(url){
