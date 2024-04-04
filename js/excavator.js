@@ -97,7 +97,7 @@ class SehuatangExcavator extends BaseExcavator{
         return []
     }
     getTitle(html){
-        return html.find("span[id='thread_subject']").text();
+        return replaceBadFileName(html.find("span[id='thread_subject']").text());
     }
     getStills(html){
         let stills = [];

@@ -52,7 +52,9 @@ async function matchBookmark(url){
 
 function replaceBadFileName(name) {
     let str = name;
+    str = str.replace(/\'/g, '');
     str = str.replace(/\?/g, '');
+    str = str.replace(/\？/g,'');
     str = str.replace(/\:/g, '');
     str = str.replace(/\*/g, '');
     str = str.replace(/\"/g, '');
