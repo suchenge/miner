@@ -187,6 +187,9 @@ function searchShortcutKey(){
             let locationUrl = window.location.href;
             let keyword = window.getSelection().toString();
             sendMessage("searchKeyword", 0, {keyword: keyword, url:locationUrl}, () => {});
+        }else if (event.altKey && event.keyCode === 68){
+            let locationUrl = window.location.href;
+            sendMessage("bookmark", 1, locationUrl);
         }
     });
 }

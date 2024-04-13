@@ -8,11 +8,19 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
     }
 
     if (request.topic === "bookmark"){
-        await chrome.bookmarks.search({url: request.message}, async (item) => {
+        let url = request.message;
+        await chrome.bookmarks.search({url: url}, async (item) => {
             let bookmarkString = JSON.stringify(item);
             chrome.bookmarks.remove(item[0].id, () => {
+                /*
                 chrome.tabs.executeScript(sender.tab.id, {
                     code: "(async() => await clean_up_sign('" + sender.tab.id + "', '" + bookmarkString + "'))()"
+                });
+                */
+                chrome.tabs.query({url:url}, tabs => {
+                    if (tabs && tabs[0]){
+                        chrome.tabs.remove(tabs[0].id);
+                    }
                 });
             });
         });
