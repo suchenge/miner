@@ -106,6 +106,8 @@ class SehuatangExcavator extends BaseExcavator{
         if (imgElement) {
             for (const element of imgElement) {
                 let src = $(element).attr("zoomfile");
+                if (!src) src = $(element).attr('file');
+
                 if (src) stills.push(src.trim());
             }
         }

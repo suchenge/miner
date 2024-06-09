@@ -120,6 +120,10 @@ function getMiner(url){
             name: "sehuatang",
             miner: () => new SehuatangExcavator(url)
         },{
+            name: "hpzl1",
+            miner: () => new SehuatangExcavator(url)
+        }
+        ,{
             name: "gmd9999",
             miner: () => new Gmd9999Excavator(url)
         },{
@@ -172,10 +176,9 @@ function jav114Link(){
                 let element = $(e.currentTarget);
                 let keyword = element.text().trim();
                 let href = element.attr('href');
-                if(keyword && href.includes("torrent")){
-                    sendMessage("searchKeyword", 0, {keyword: keyword, url:url}, () => {});
-                    element.removeAttr('href');
-                }
+                
+                if(keyword) sendMessage("searchKeyword", 0, {keyword: keyword, url:url}, () => {});
+                if(keyword && href && href.includes("torrent")) element.removeAttr('href');
             }
         }, "a");
     }
