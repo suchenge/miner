@@ -191,7 +191,6 @@ function jav114Link(){
             $(element).css("cursor", "pointer");
             $(element).click(() => {
                 url = "https://www.141jav.com/search/" + id;
-                console.log(url);
                 sendMessage("openUrl", 0, {url: url});
             })
         }
