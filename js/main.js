@@ -170,7 +170,7 @@ function setTestXa360scmCookie(){
 
 function jav114Link(){
     let url = window.location.href;
-    if(url.includes('141jav.com')){
+    if (url.includes('141jav.com')){
         $("body").on({
             click: function(e) {
                 let element = $(e.currentTarget);
@@ -181,6 +181,20 @@ function jav114Link(){
                 if(keyword && href && href.includes("torrent")) element.removeAttr('href');
             }
         }, "a");
+    }
+
+    if (url.includes('javdb.com/v/')){
+        var element = $('h2 strong')[0];
+        if (element){
+            var id = element.innerText.trim().replace("-", "");
+            console.log(id);
+            $(element).css("cursor", "pointer");
+            $(element).click(() => {
+                url = "https://www.141jav.com/search/" + id;
+                console.log(url);
+                sendMessage("openUrl", 0, {url: url});
+            })
+        }
     }
 }
 
