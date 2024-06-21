@@ -188,7 +188,11 @@ function jav114Link(){
         if (element){
             var id = element.innerText.trim().replace("-", "");
             console.log(id);
-            $(element).css("cursor", "pointer");
+
+            $(element).css("cursor", "pointer")
+                      .css("color", "blue")
+                      .css("text-decoration", "underline");
+        
             $(element).click(() => {
                 url = "https://www.141jav.com/search/" + id;
                 sendMessage("openUrl", 0, {url: url});
