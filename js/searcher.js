@@ -26,7 +26,7 @@ class Scm360Searcher extends BaseSearcher {
     async getUrl(){
         let url;
         if (this.id.startsWith('RQ'))
-            url = 'https://dms.360scm.com/dms/dev/dev_view_rq.html?menuid=119&reqid=' + this.id;
+            url = 'https://dms.360scm.com/dms/dev/dev_view_rq.html?reqid=' + this.id;
         else if (this.id.startsWith('MP')){
             url = 'https://dms.360scm.com/dms/cs/cs_view_malfunction.html?malfunction_id=' + this.id;
         }
