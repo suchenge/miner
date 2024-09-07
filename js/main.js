@@ -147,7 +147,8 @@ function getMiner(url){
 
 function setTestXa360scmCookie(){
     let currentUrl = window.location.href;
-    if (currentUrl.includes("https://testxa.360scm.com/")){
+    if (currentUrl.includes("https://testxa.360scm.com/")
+        || currentUrl.includes("https://testxaoracle.360scm.com/")){
         let cookies = [
             {"Key": "SSID", "Value": localStorage.getItem("SSID")},
             {"Key": "Token", "Value": localStorage.getItem("Token")},
