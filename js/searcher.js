@@ -17,6 +17,21 @@ class BaseSearcher {
     }
 }
 
+class JavbusSearcher extends BaseSearcher {
+    constructor(id){
+        id = id.replace(/(\d+)/, '-$1');
+        console.log(id);
+        super(id);
+    }
+
+    active = false;
+
+    async getUrl(){
+        let url = "https://www.javbus.com/" + this.id;
+        return url;
+    }
+}
+
 class Scm360Searcher extends BaseSearcher {
     constructor(id) {
         super(id);
@@ -57,6 +72,7 @@ async function searchKeyword(url, keyword){
     if (url && keyword) {
         if (url.includes('dms.360scm.com') || url.includes('devops.aliyun.com'))
             await new Scm360Searcher(keyword).open();
-        else await new JavdbSearcher(keyword).open();
+        //else await new JavdbSearcher(keyword).open();
+        else await new JavbusSearcher(keyword).open();
     }
 }
