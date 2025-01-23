@@ -76,7 +76,6 @@ async function clean_up(){
 
 async function clean_up_sign(tabId, bookmark){
     let item = eval(bookmark)[0];
-    //console.log(item);
 
     let hashCode = item.url.hashCode();
     let checkbox = $("input[type='checkbox'][hashCode='" + hashCode + "']");
