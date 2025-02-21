@@ -119,9 +119,10 @@ class PreviewPopup {
                     .miner-preview-popup .infoContent textarea {
                         height: 0;
                         width: 0;
-                        border: 1px solid dimgrey;
+                        border: 0px solid dimgrey;
                         outline: none; 
                         resize: none;
+                        display:none;
                     }
                     .miner-preview-popup .image_container {
                         height: calc(28%);
@@ -219,7 +220,10 @@ class PreviewPopup {
                 let urlGroup = url.split("/");
                 let nameGroup = urlGroup[urlGroup.length - 1].split(".");
                 let type = nameGroup[nameGroup.length - 1];
-                let path = $(".titleInfo").text().replace("×","").trim() + '/' + index + '.' + type;
+                let seq = ('' + index).padStart(5, '0');
+                let dir = replaceBadFileName($(".titleInfo").text().replace("×","").trim());
+                let path = dir + '/' + seq + '.' + type;
+
                 console.log(path);
                 
                 sendMessage("download", index, {

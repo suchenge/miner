@@ -13,10 +13,18 @@ async function excavate(){
     let urls = [];
     let current_url = window.location.href;
 
-    let title = "清洁工";
+    //let title = "清洁工";
+
+    let title = $("title").text();
     if (current_url.includes("sehuatang")){
         title = $("#thread_subject").text();
     }
+
+    
+    if (title.includes("我为人人")) {
+        title = $("h1").text();
+    }
+    
 
     let previewPopup = new PreviewPopup("miner-preview-popup", title);
     previewPopup.create();
@@ -52,6 +60,7 @@ async function excavate(){
         Array.from(imgs).forEach(img => addUrl($(img).attr('src')));
         Array.from(links).forEach(link => addUrl($(link).attr('href')));
         Array.from(links).forEach(link => addUrl($(link).attr('rel')));
+        Array.from(imgs).forEach(img => addUrl($(img).attr('data-original')));
     }
 }
 
@@ -121,8 +130,7 @@ function getMiner(url){
         },{
             name: "hpzl1",
             miner: () => new SehuatangExcavator(url)
-        }
-        ,{
+        },{
             name: "gmd9999",
             miner: () => new Gmd9999Excavator(url)
         },{

@@ -47,9 +47,11 @@ class BaseExcavator{
             path: title.trim()
         } 
     }
+
     getTitle(html){
         return html.filter("title").text();
     }
+
     getStills(html){
         let result = []
         let srcList = html.find("img");
@@ -60,6 +62,7 @@ class BaseExcavator{
         }
         return result;
     }
+
     getOtherPageUrls(html){
         return [];
     }
@@ -85,6 +88,7 @@ class Sis001Excavator extends BaseExcavator{
                 }
             }
         }
+
         return stills;
     }
 }
@@ -93,12 +97,15 @@ class SehuatangExcavator extends BaseExcavator{
     constructor(url){
         super(url)
     }
+
     getOtherPageUrls(html){
         return []
     }
+
     getTitle(html){
         return replaceBadFileName(html.find("span[id='thread_subject']").text());
     }
+
     getStills(html){
         let stills = [];
 
@@ -119,6 +126,7 @@ class Gmd9999Excavator extends BaseExcavator{
     constructor(url){
         super(url)
     }
+
     getOtherPageUrls(html){
         let urls = [];
         let pageLinks = html.find("a[class='page-link']");
@@ -138,9 +146,11 @@ class Gmd9999Excavator extends BaseExcavator{
 
         return urls;
     }
+
     getTitle(html){
         return html.find("h3[class='page-title']").text().replace("收藏","").trim();
     }
+
     getStills(html){
         let stills = [];
 
@@ -157,17 +167,20 @@ class Gmd9999Excavator extends BaseExcavator{
     }
 }
 
-class JpmnbExcavator extends BaseExcavator{
+class JpmnbExcavator extends BaseExcavator {
     constructor(url) {
         super(url);
     }
+
     sign(currentUrl, nextUrl){
         $("a[href='" + currentUrl + "']").removeAttr("class");
         $("a[href='" + nextUrl + "']").attr("class", "current");
     }
+
     getTitle(html){
         return html.find("h1[class='article-title']").text();
     }
+
     getStills(html){
         let stills = [];
 
@@ -180,6 +193,7 @@ class JpmnbExcavator extends BaseExcavator{
         }
         return stills;
     }
+    
     getOtherPageUrls(html){
         let urls = [];
 
