@@ -42,7 +42,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
     }
 
     if (request.topic === "openUrl"){
-        await openUrl(request.message.url);
+        await openUrl(request.message.url, request.message.active);
     }
 });
 

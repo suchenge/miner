@@ -119,7 +119,7 @@ class PreviewPopup {
                     .miner-preview-popup .infoContent textarea {
                         height: 0;
                         width: 0;
-                        border: 0px solid dimgrey;
+                        border: 0 solid dimgrey;
                         outline: none; 
                         resize: none;
                         display:none;
@@ -149,6 +149,7 @@ class PreviewPopup {
                     .miner-preview-popup .image_container img {
                         height: calc(100% - 15px);
                         width: calc(100%);
+                        cursor: pointer;
                     }
                     .miner-preview-popup .miner-preview-popup-url {
                         text-overflow: ellipsis;
@@ -286,7 +287,15 @@ class PreviewPopup {
 
         let image_container = $("<div id='miner-preview-popup-" + url_hashCode + "' class='image_container'></div>");
         let image_checkbox = $("<input type='checkbox' hashCode='" + url_hashCode + "'>");
+
+        //let image_control = $("<a href='" + url +"' target='_blank'></a>");
         let image_control = $("<img alt='" + url + "' src='" + url + "'/>");
+
+        image_control.click(async (e) => {
+            const imageUrl = $(e.currentTarget).attr("src");
+            console.log(imageUrl);
+            sendMessage("openUrl", "", {url: imageUrl, active: false}, response => {});
+        });
 
         image_container.append(image_checkbox);
         image_container.append(image_control);
