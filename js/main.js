@@ -222,6 +222,14 @@ function searchShortcutKey(){
     });
 }
 
+function preViewShortcutKey(){
+    $(document).keydown(async function(event) {
+        if (event.shiftKey && event.keyCode === 86) {
+            await excavate();
+        }
+    });
+}
+
 function jypcLink(){
     let mainUrl = window.location.href;
     if (mainUrl.includes('jypc1.com')){
@@ -256,7 +264,8 @@ function jypcLink(){
 }
 
 (function load(){
-    searchShortcutKey()
+    searchShortcutKey();
+    preViewShortcutKey();
     setTestXa360scmCookie();
     jav114Link();
     jypcLink();
