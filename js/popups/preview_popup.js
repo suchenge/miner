@@ -223,7 +223,7 @@ class PreviewPopup {
                 let type = nameGroup[nameGroup.length - 1];
                 let seq = ('' + index).padStart(5, '0');
                 let dir = replaceBadFileName($(".titleInfo").text().replace("×","").trim());
-                let path = dir + '/' + seq + '.' + type;
+                let path = 'Picture/' + dir + '/' + seq + '.' + type;
 
                 console.log(path);
                 
