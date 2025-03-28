@@ -21,8 +21,8 @@ async function excavate(){
     }
 
     
-    if (title.includes("我为人人")) {
-        title = $("h1").text();
+    if (title.includes("人人")) {
+        title = $("#subject_tpc").text();
     }
     
 

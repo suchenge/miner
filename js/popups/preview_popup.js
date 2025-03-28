@@ -2,6 +2,7 @@ class PreviewPopup {
     constructor(name, title) {
         this.name = name;
         this.title = title;
+        console.log(this.title);
 
         this.container = null;
         this.infoContent = null;
