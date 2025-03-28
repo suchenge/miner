@@ -147,7 +147,6 @@ class PreviewPopup {
                         cursor: pointer;
                     }
                     .miner-preview-popup .image_container img {
-                        height: calc(100% - 15px);
                         width: calc(100%);
                         cursor: pointer;
                     }
