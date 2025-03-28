@@ -5,6 +5,8 @@ class PreviewPopup {
 
         this.container = null;
         this.infoContent = null;
+
+        this.image_container_width = 0;
     }
 
     create() {
@@ -125,7 +127,6 @@ class PreviewPopup {
                         display:none;
                     }
                     .miner-preview-popup .image_container {
-                        width: calc(18%);
                         border: 1px solid dimgrey;
                         float: left;
                         padding: 10px;
@@ -171,6 +172,8 @@ class PreviewPopup {
             container.css("height", popup_height + "px");
             container.css("left", X + "px");
             container.css("top", Y + "px");
+
+            this.image_container_width = ((popup_width) / 6) - 40;
         };
 
         this.container = $("<div class='miner-preview-popup'></div>");
@@ -283,7 +286,7 @@ class PreviewPopup {
     write_line(url){
         let url_hashCode = url.hashCode();
 
-        let image_container = $("<div id='miner-preview-popup-" + url_hashCode + "' class='image_container'></div>");
+        let image_container = $(`<div id='miner-preview-popup-${url_hashCode}' class='image_container' style='width:${this.image_container_width}px'></div>`);
         let image_checkbox = $("<input type='checkbox' hashCode='" + url_hashCode + "'>");
 
         //let image_control = $("<a href='" + url +"' target='_blank'></a>");
