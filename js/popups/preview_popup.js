@@ -125,7 +125,6 @@ class PreviewPopup {
                         display:none;
                     }
                     .miner-preview-popup .image_container {
-                        height: calc(28%);
                         width: calc(18%);
                         border: 1px solid dimgrey;
                         float: left;
