@@ -23,6 +23,8 @@ async function excavate(){
     
     if (title.includes("人人")) {
         title = $("#subject_tpc").text();
+        dir = Array.from($("#breadCrumb a"))[2];
+        console.log($(dir).text());
     }
     
 
