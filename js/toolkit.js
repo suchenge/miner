@@ -73,7 +73,7 @@ function isRelativePath(url){
 }
 
 function isPic(url){
-    return /\.(gif|jpg|jpeg|png)/i.test(url);
+    return /\.(gif|jpg|jpeg|png|webp)/i.test(url);
 }
 
 function getAbsoluteUrl(url){

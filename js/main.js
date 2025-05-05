@@ -27,6 +27,9 @@ async function excavate(){
         console.log($(dir).text());
     }
     
+    if (current_url.includes('xiuren222')){
+        title = $('h1').text();
+    }
 
     let previewPopup = new PreviewPopup("miner-preview-popup", title);
     previewPopup.create();
