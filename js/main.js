@@ -171,7 +171,7 @@ function setTestXa360scmCookie(){
         $.ajax({
             type: "post",
             dataType: "json",
-            url: "http://localhost/SCM.Developer.Apis/cookie",
+            url: "http://172.16.100.43/SCM.Developer.Apis/cookie",
             contentType: "application/json;charset=UTF-8",
             data: JSON.stringify(cookies),
             success: function (data) {
