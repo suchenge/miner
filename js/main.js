@@ -168,14 +168,21 @@ function setTestXa360scmCookie(){
 
         console.log(cookies);
 
+        let apiUrl = "https://172.16.100.43/SCM.Developer.Apis/cookie";
+
         $.ajax({
             type: "post",
             dataType: "json",
-            url: "http://172.16.100.43/SCM.Developer.Apis/cookie",
+            url: apiUrl,
             contentType: "application/json;charset=UTF-8",
             data: JSON.stringify(cookies),
             success: function (data) {
                 console.log(data);
+            },    
+            error: function(xhr, status, error) { // 请求失败后的回调函数
+                console.log(xhr);
+                console.log(status);
+                console.error(error);
             }
         });
     }
