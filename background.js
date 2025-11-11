@@ -1,5 +1,58 @@
-chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+   if (changeInfo.status === 'complete'){
+       chrome.scripting.executeScript({
+           target: { tabId: tabId },
+           files: ["/js/main.js"],
+       })
+   }
+});
+
+
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+    if (request.topic === "searchKeyword"){
+        await chrome.scripting.executeScript({
+            target: { tabId: sender.tab.id },
+            args: [request.message.url, request.message.keyword],
+            func: async (url, keyword) => await searchKeyword(url, keyword)
+        });
+
+        return true;
+    }
+
+    if (request.topic === "openUrl"){
+        await chrome.tabs.create({ url: request.message.url, active: request.message.active });
+
+        return true;
+    }
+
     if (request.topic === "download"){
+        await chrome.downloads.download(request.message, async (item) => {
+            downloadItemInfos.set(item, sender.tab.id);
+        });
+
+        await sendResponse(request);
+
+        return true;
+    }
+
+    if (request.topic === "appendBlackUrls"){
+        let blackUrls = await getBlackUrls();
+
+        if (blackUrls) blackUrls.push.apply(blackUrls, request.message);
+        else blackUrls = request.message;
+
+        blackUrls = [...new Set(blackUrls)];
+
+        await chrome.storage.local.set({blackUrls:blackUrls});
+    }
+})
+
+/*
+chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
+    console.log(request.topic);
+
+    if (request.topic === "download"){
+        debugger;
         await chrome.downloads.download(request.message, async (item) => {
             downloadItemInfos.set(item, sender.tab.id);
         });
@@ -12,11 +65,6 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
         await chrome.bookmarks.search({url: url}, async (item) => {
             let bookmarkString = JSON.stringify(item);
             chrome.bookmarks.remove(item[0].id, () => {
-                /*
-                chrome.tabs.executeScript(sender.tab.id, {
-                    code: "(async() => await clean_up_sign('" + sender.tab.id + "', '" + bookmarkString + "'))()"
-                });
-                */
                 chrome.tabs.query({url:url}, tabs => {
                     if (tabs && tabs[0]){
                         chrome.tabs.remove(tabs[0].id);
@@ -44,18 +92,25 @@ chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
     if (request.topic === "openUrl"){
         await openUrl(request.message.url, request.message.active);
     }
+
+    return true;
 });
+*/
 
 chrome.downloads.onChanged.addListener(async item => {
     if (item.state && (item.state.current === "complete" || item.state.current === "interrupted")) {
-        chrome.downloads.search({ id: item.id }, dItem => {
-            let itemString = JSON.stringify(dItem);
+        console.log(item.state);
+        chrome.downloads.search({ id: item.id }, async (fileItem) => {
             let tabId = downloadItemInfos.get(item.id);
-            downloadItemInfos.delete(item.id);
 
-            chrome.tabs.executeScript(tabId, {
-                code: "(async() => await sign('" + tabId + "', '" + itemString + "'))()"
-            });
+            downloadItemInfos.delete(item.id);
+            //await sign(tabId, dItem);
+
+            chrome.scripting.executeScript({
+                target: { tabId: tabId },
+                args: [tabId, fileItem],
+                func: async (tabId, fileItem) => await sign(tabId, fileItem)
+            })
         });
     }
 });
@@ -65,25 +120,37 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
     switch (info.menuItemId){
         //勘探
         case "menuSearch":
-            await searchKeyword(tab.url, info.selectionText);
+            await chrome.scripting.executeScript({
+                target: { tabId: tab.id },
+                args: [tab.url, info.selectionText],
+                func: async (url, keyword) => await searchKeyword(url, keyword)
+            });
+
             break;
         //开采
         case "menuDownload":
-            await chrome.tabs.executeScript(tab.id, {
-                code: "(async() => await analysis('" + info.menuItemId + "'))()"
+            await chrome.scripting.executeScript({
+                target: { tabId: tab.id },
+                args: [info.menuItemId],
+                func: async (menuItemId) => await analysis(menuItemId)
             });
+
             break;
         //清理
         case "menuClear":
-            await chrome.tabs.executeScript(tab.id, {
-                code: "(async() => await clean_up())()"
+            await chrome.scripting.executeScript({
+                target: { tabId: tab.id },
+                func: async () => await clean_up()
             });
+
             break;
         //挖掘
         case "menuExcavate":
-            await chrome.tabs.executeScript(tab.id, {
-                code: "(async() => await excavate())()"
+            await chrome.scripting.executeScript({
+                target: { tabId: tab.id, allFrames: true },
+                func: async () => await excavate()
             });
+
             break;
     }
 });
@@ -116,7 +183,8 @@ const menus = [
         parentId: "menuMain",
         contexts: ["all"],
     }, {
-        type:"separator",
+        id: "menuSeparator",
+        type: "separator",
         parentId: "menuMain",
     }, {
         id: "menuClear",
@@ -127,4 +195,6 @@ const menus = [
     }
 ];
 
-menus.forEach(menu => chrome.contextMenus.create(menu));
+chrome.runtime.onInstalled.addListener(() => {
+    menus.forEach(menu => chrome.contextMenus.create(menu));
+})

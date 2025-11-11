@@ -185,9 +185,9 @@ class Popup {
         titleContainer.append(this.counter);
 
         tabInfo.append(titleContainer);
-        tabInfo.append($("<div class='downloadButton'><img src='" + chrome.extension.getURL("images/download-2.png") + "'></img></div>"));
+        tabInfo.append($("<div class='downloadButton'><img src='" + chrome.runtime.getURL("images/download-2.png") + "'></img></div>"));
 
-        this.loadingElement = $("<img src='" + chrome.extension.getURL("images/loading.gif") + "'/>");
+        this.loadingElement = $("<img src='" + chrome.runtime.getURL("images/loading.gif") + "'/>");
         this.infoContent = $("<div class='infoContent'></div>");
         this.infoContent.append(this.loadingElement);
 
@@ -393,7 +393,7 @@ class PopupLine{
 
     loading(){
         this.signElement.text("");
-        this.signElement.append("<img src='" + chrome.extension.getURL("images/smail-loading.gif") + "'/>");
+        this.signElement.append("<img src='" + chrome.runtime.getURL("images/smail-loading.gif") + "'/>");
     }
     
     sign(state){

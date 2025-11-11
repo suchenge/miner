@@ -4,16 +4,21 @@ class BaseSearcher {
     }
 
     active = false;
-    async getUrl() {
+    async getUrl() {}
 
-    }
     async open(){
         if (this.id){
             let url = await this.getUrl();
             if (url){
-                await chrome.tabs.create({ url: await this.getUrl(), active: this.active });
+                console.log(url);
+                sendMessage("openUrl", "", {url: url, active: false}, response => {});
+                //await chrome.tabs.create({ url: await this.getUrl(), active: this.active });
             }
         }
+    }
+
+    async returnUrl(){
+        return await this.getUrl();
     }
 }
 
@@ -73,6 +78,15 @@ async function searchKeyword(url, keyword){
         if (url.includes('dms.360scm.com') || url.includes('devops.aliyun.com'))
             await new Scm360Searcher(keyword).open();
         else await new JavdbSearcher(keyword).open();
+        //else await new JavbusSearcher(keyword).open();
+    }
+}
+
+async function getSearchKeywordUrl(url, keyword){
+    if (url && keyword) {
+        if (url.includes('dms.360scm.com') || url.includes('devops.aliyun.com'))
+            return await new Scm360Searcher(keyword).returnUrl();
+        else return await new JavdbSearcher(keyword).returnUrl();
         //else await new JavbusSearcher(keyword).open();
     }
 }

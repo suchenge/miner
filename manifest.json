@@ -6,9 +6,13 @@
       "48": "images/miner-48.png",
       "96": "images/miner-64.png"
     },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "矿工",
-  "version": "1.0",
+  "version": "2.0",
+  "action": {
+    "default_icon": "images/miner-32.png",
+    "default_title": "矿工"
+  },
   "permissions": [
     "tabs",
     "activeTab",
@@ -17,41 +21,52 @@
     "contextMenus",
     "bookmarks",
     "storage",
-    "<all_urls>"
+    "scripting"
   ],
-  "browser_action": {
-    "default_icon": "images/miner-32.png",
-    "default_title": "矿工"
-  },
+  "host_permissions": [
+    "https://*/*",
+    "https://*/*"
+  ],
   "content_scripts":[
     {
-      "matches": ["http://*/*", "https://*/*"], 
+      "matches": ["<all_urls>"],
       "js": [
-        "js/jquery.min.js", 
-        "js/jquery-ui.min.js", 
-        "js/toolkit.js",
-        "js/fileInfo.js",
-        "js/resolver.js",
-        "js/searcher.js",
-        "js/excavator.js",
-        "js/popups/popup.js",
-        "js/popups/clean_up_popup.js",
-        "js/popups/preview_popup.js",
-        "js/downloader.js",
-        "js/main.js"
+        "/js/jquery.min.js",
+        "/js/jquery-ui.min.js",
+        "/js/toolkit.js",
+        "/js/fileInfo.js",
+        "/js/resolver.js",
+        "/js/searcher.js",
+        "/js/excavator.js",
+        "/js/popups/popup.js",
+        "/js/popups/clean_up_popup.js",
+        "/js/popups/preview_popup.js",
+        "/js/downloader.js",
+        "/js/main.js"
       ]
     }
   ],
-    "web_accessible_resources": [
-    "images/*"
+  "web_accessible_resources": [{
+    "resources": [
+      "images/*.png",
+      "images/*.gif",
+      "/js/jquery.min.js",
+      "/js/jquery-ui.min.js",
+      "/js/popups/popup.js",
+      "/js/popups/clean_up_popup.js",
+      "/js/popups/preview_popup.js",
+      "/js/toolkit.js",
+      "/js/downloader.js",
+      "/js/excavator.js",
+      "/js/fileInfo.js",
+      "/js/resolver.js",
+      "/js/searcher.js",
+      "/js/main.js"
+    ],
+    "matches": ["<all_urls>"]
+  }
   ],
   "background": {
-      "persistent": true,
-      "scripts": [
-        "js/jquery.min.js",
-        "js/toolkit.js",
-        "js/searcher.js",
-        "background.js"
-      ]
+      "service_worker": "background.js"
    }
 }
