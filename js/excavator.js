@@ -2,6 +2,7 @@ class BaseExcavator{
     constructor(url) {
         this.url = url;
     }
+
     async get(){
         let response = await request(this.url);
         let html = $(response);
@@ -60,6 +61,7 @@ class BaseExcavator{
                 if(src) result.push($(src).attr("src"));
             }
         }
+        
         return result;
     }
 
@@ -69,12 +71,15 @@ class BaseExcavator{
 }
 
 class Sis001Excavator extends BaseExcavator{
+
     constructor(url){
         super(url)
     }
+
     getTitle(html){
         return html.find("h2").eq(1).text();
     }
+
     getStills(html){
         let stills = [];
 
@@ -94,6 +99,7 @@ class Sis001Excavator extends BaseExcavator{
 }
 
 class SehuatangExcavator extends BaseExcavator{
+
     constructor(url){
         super(url)
     }
@@ -118,11 +124,13 @@ class SehuatangExcavator extends BaseExcavator{
                 if (src) stills.push(src.trim());
             }
         }
+
         return stills;
     }
 }
 
 class Gmd9999Excavator extends BaseExcavator{
+
     constructor(url){
         super(url)
     }
@@ -163,11 +171,13 @@ class Gmd9999Excavator extends BaseExcavator{
                 }
             }
         }
+
         return stills;
     }
 }
 
 class JpmnbExcavator extends BaseExcavator {
+
     constructor(url) {
         super(url);
     }
@@ -191,6 +201,7 @@ class JpmnbExcavator extends BaseExcavator {
                 stills.push(src.trim());
             }
         }
+
         return stills;
     }
     
@@ -214,12 +225,15 @@ class JpmnbExcavator extends BaseExcavator {
 }
 
 class XiannvkuExcavator extends BaseExcavator{
+
     constructor(url){
         super(url)
     }
+
     getTitle(html){
         return html.find("h1").text();
     }
+
     getStills(html){
         let stills = [];
 
@@ -230,8 +244,10 @@ class XiannvkuExcavator extends BaseExcavator{
                 stills.push(src.trim());
             }
         }
+
         return stills;
     }
+
     getOtherPageUrls(html){
         let urls = [];
         let urlTemplate = this.url.replace("-1.html", "");
@@ -248,12 +264,15 @@ class XiannvkuExcavator extends BaseExcavator{
 }
 
 class XiurenbaExcavator extends BaseExcavator{
+
     constructor(url){
         super(url)
     }
+
     getTitle(html){
         return html.filter("meta[name='description']").attr("content");
     }
+
     getStills(html){
         let stills = [];
         let title = this.getTitle(html);
@@ -269,8 +288,10 @@ class XiurenbaExcavator extends BaseExcavator{
                 
             }
         }
+
         return stills;
     }
+
     getOtherPageUrls(html){
         let urls = [];
         let pagination = html.find("div[class='page']").first();
@@ -284,17 +305,21 @@ class XiurenbaExcavator extends BaseExcavator{
                 }
             }
         }
+
         return urls;
     }
 }
 
 class Xrmn01Excavator extends BaseExcavator{
+
     constructor(url){
         super(url)
     }
+
     getTitle(html){
         return html.find("h1").text();
     }
+
     getStills(html){
         let stills = [];
         let title = this.getTitle(html);
@@ -310,8 +335,10 @@ class Xrmn01Excavator extends BaseExcavator{
                 
             }
         }
+
         return stills;
     }
+
     getOtherPageUrls(html){
         let urls = [];
         let pagination = html.find("div[class='page']").first();
@@ -325,6 +352,7 @@ class Xrmn01Excavator extends BaseExcavator{
                 }
             }
         }
+
         return urls;
     }
 }

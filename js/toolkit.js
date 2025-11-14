@@ -3,11 +3,13 @@ String.prototype.hashCode = function () {
 
     var hash = 0, i, chr;
     if (this.length === 0) return hash;
+
     for (i = 0; i < this.length; i++) {
         chr = this.charCodeAt(i);
         hash = ((hash << 5) - hash) + chr;
-        hash |= 0; // Convert to 32bit integer
+        hash |= 0; 
     }
+
     return hash;
 };
 
@@ -33,7 +35,9 @@ function sendMessage(topic, id, messageBody, callback) {
         id: id,
         message: messageBody
     };
+
     console.log({method: "sendMessage", request: request});
+
     chrome.runtime.sendMessage(request, callback);
 }
 
@@ -78,22 +82,27 @@ function isPic(url){
 
 function getAbsoluteUrl(url){
     var img = new Image();
+
     img.src = url;  // 设置相对路径给Image, 此时会发送出请求
     url = img.src;  // 此时相对路径已经变成绝对路径
     img.src = null; // 取消请求
+
     return url;
 }
 
 function createLink(url){
     let newA = document.createElement("a");
     newA.href = url;
+
     return newA;
 }
 
 function getAbsoluteUrlByHref(url){
     let newA = createLink(url);
     let href = newA.href;
+
     newA.remove();
+    
     return href;
 }
 

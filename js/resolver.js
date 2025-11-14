@@ -3,6 +3,7 @@ class BaseResolver {
         this.url = url;
         this.htmlContent = null;
     }
+
     async get() {
         let response = await request(this.url);
         if (response) {
@@ -24,17 +25,22 @@ class BaseResolver {
                 path: path
             };
         }
+
         return null;
     }
+
     getId() {
         return $("title").text();
     }
+
     getTitle() {
         return $("title").text();
     }
+
     getCover() {
         return $("link[rel$='icon']").attr("href");
     }
+
     getStills() {
         let result = [];
 
@@ -50,6 +56,7 @@ class BaseResolver {
 
         return result;
     }
+
     getTorrents() {
         return [];
     }
@@ -59,20 +66,26 @@ class JavdbResolver extends BaseResolver {
     constructor(url) {
         super(url);
     }
+
     getId() {
         let id = this.htmlContent.find("a[title='複製番號']").attr("data-clipboard-text");
+
         return id.toUpperCase();
     }
+
     getTitle() {
         let title = this.htmlContent.find("span[class='origin-title']").text();
         if (!title) {
             title = this.htmlContent.find("strong[class='current-title']").text();
         }
+
         return title;
     }
+
     getCover() {
         return this.htmlContent.find("img[class='video-cover']").attr("src");
     }
+
     getStills() {
         let result = [];
         let imgs = this.htmlContent.find("a[data-fancybox='gallery'][class='tile-item']");
@@ -81,8 +94,10 @@ class JavdbResolver extends BaseResolver {
             if (href !== "#preview-video")
                 result.push(href.trim());
         }
+
         return result;
     }
+
     getTorrents() {
         let result = [];
         let magentElements = this.htmlContent.find("#magnets-content").children();
@@ -100,23 +115,28 @@ class JavdbResolver extends BaseResolver {
         return result;
     }
 }
-
 class JavhooResolver extends BaseResolver {
     constructor(url) {
         super(url);
     }
+
     getId() {
         let id = this.htmlContent.find("span[class='categories']").text();
+
         return id.toUpperCase();
     }
+
     getTitle() {
         let id = this.getId();
         let title = this.htmlContent.find("h1[class='article-title']").text()
+
         return title.replace(id, "").trim();
     }
+
     getCover() {
         return this.htmlContent.find("img[class='alignnone size-full']").attr("src");
     }
+
     getStills() {
         let result = [];
         let imgs = this.htmlContent.find("a[class='dt-mfp-item']");
@@ -125,8 +145,10 @@ class JavhooResolver extends BaseResolver {
             if (href !== "#preview-video")
                 result.push(href.trim());
         }
+
         return result;
     }
+    
     getTorrents() {
         let result = [];
         let magentElements = this.htmlContent.find("#comments").find("tbody").last().find("tr");

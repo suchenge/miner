@@ -11,6 +11,7 @@ class Popup {
         this.counter = null;
         this.lineLength = 0;
     }
+
     create() {
         let style = $(`<style scoped>
                     .miner{
@@ -219,15 +220,19 @@ class Popup {
         this.downloadEvent = null;
         this.lineLength = 0;
     }
+
     download(event){
         this.downloadEvent = event;
     }
+
     isCanBeSelect(event){
         this.isCanBeSelectEvent = event;
     }
+
     isDefaultSelected(event){
         this.isDefaultSelectedEvent = event;
     }
+
     selectedLine(event){
         if (event === "add") this.lineLength += 1;
         else this.lineLength -= 1;
@@ -264,6 +269,7 @@ class Popup {
 
     async write(getContentEvent){
         let content = await getContentEvent();
+
         if (content) {
             for (const key in content){
                 this.writeTitle(key);
@@ -280,6 +286,7 @@ class Popup {
             let children = this.infoContent.children();
             let lastChildren = children[children.length - 1];
             let childrenHeight = 0;
+
             Array.from(children).forEach(x => childrenHeight += $(x).outerHeight(true));
 
             let lastChildrenHeight = infoContentHeight - childrenHeight;
@@ -303,6 +310,7 @@ class Popup {
 
     sign(hashCode, state){
         let line = this.lines.find(x => x.hashCode === hashCode);
+
         if (line) {
             line.focus();
             line.sign(state);
@@ -354,10 +362,9 @@ class PopupLine{
             
             urlElement.click(() => {
                 let url = this.content.url;
+
                 console.log(url);
-                sendMessage("openUrl", "", {
-                    url: url
-                }, response => {});
+                sendMessage("openUrl", "", { url: url }, response => {});
             });
 
             selectLineElement.append(this.signElement);

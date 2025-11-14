@@ -12,7 +12,6 @@ class BaseSearcher {
             if (url){
                 console.log(url);
                 sendMessage("openUrl", "", {url: url, active: false}, response => {});
-                //await chrome.tabs.create({ url: await this.getUrl(), active: this.active });
             }
         }
     }
@@ -33,6 +32,7 @@ class JavbusSearcher extends BaseSearcher {
 
     async getUrl(){
         let url = "https://www.javbus.com/" + this.id;
+
         return url;
     }
 }
@@ -45,6 +45,7 @@ class Scm360Searcher extends BaseSearcher {
     active = true;
     async getUrl(){
         let url;
+
         if (this.id.startsWith('RQ'))
             url = 'https://dms.360scm.com/dms/dev/dev_view_rq.html?reqid=' + this.id;
         else if (this.id.startsWith('MP')){
@@ -64,11 +65,14 @@ class JavdbSearcher extends BaseSearcher {
         let baseUrl = "https://javdb.com/";
         let searchUrl = baseUrl + "search?q=" + this.id + "&f=all";
         let response = await request(searchUrl);
+        
         if (response) {
             let html = $(response);
             let href = html.find("a[class='box']").attr("href");
+
             return baseUrl + href.substring(1, href.length);
         }
+
         return null;
     }
 }

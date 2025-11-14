@@ -47,56 +47,6 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     }
 })
 
-/*
-chrome.runtime.onMessage.addListener(async (request, sender, callback) => {
-    console.log(request.topic);
-
-    if (request.topic === "download"){
-        debugger;
-        await chrome.downloads.download(request.message, async (item) => {
-            downloadItemInfos.set(item, sender.tab.id);
-        });
-
-        callback(request);
-    }
-
-    if (request.topic === "bookmark"){
-        let url = request.message;
-        await chrome.bookmarks.search({url: url}, async (item) => {
-            let bookmarkString = JSON.stringify(item);
-            chrome.bookmarks.remove(item[0].id, () => {
-                chrome.tabs.query({url:url}, tabs => {
-                    if (tabs && tabs[0]){
-                        chrome.tabs.remove(tabs[0].id);
-                    }
-                });
-            });
-        });
-    }
-
-    if (request.topic === "appendBlackUrls"){
-        let blackUrls = await getBlackUrls();
-
-        if (blackUrls) blackUrls.push.apply(blackUrls, request.message);
-        else blackUrls = request.message;
-
-        blackUrls = [...new Set(blackUrls)];
-
-        await chrome.storage.local.set({blackUrls:blackUrls});
-    }
-
-    if (request.topic === "searchKeyword"){
-        await searchKeyword(request.message.url, request.message.keyword);
-    }
-
-    if (request.topic === "openUrl"){
-        await openUrl(request.message.url, request.message.active);
-    }
-
-    return true;
-});
-*/
-
 chrome.downloads.onChanged.addListener(async item => {
     if (item.state && (item.state.current === "complete" || item.state.current === "interrupted")) {
         console.log(item.state);
@@ -116,7 +66,7 @@ chrome.downloads.onChanged.addListener(async item => {
 });
 
 
-chrome.contextMenus.onClicked.addListener(async function (info, tab) {
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     switch (info.menuItemId){
         //勘探
         case "menuSearch":

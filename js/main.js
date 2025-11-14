@@ -1,21 +1,16 @@
 let minerPopup = new Popup("miner", "矿工");
 
 async function excavate(){
-    console.log("excavate");
-
     const imgs = $(document.body).find("img");
     const links = $(document.body).find("a");
 
     let urls = [];
     let current_url = window.location.href;
 
-    //let title = "清洁工";
-
     let title = $("title").text();
     if (current_url.includes("sehuatang")){
         title = $("#thread_subject").text();
     }
-
     
     if (title.includes("人人")) {
         title = $("#subject_tpc").text();
@@ -82,8 +77,8 @@ async function analysis(menuId) {
 
 async function sign(tabId, fileItem){
     let item = fileItem[0];
-    //let item = eval(fileItem)[0];
     console.log({tabId, item});
+
     let hashCode = item.url.hashCode();
     minerPopup.sign(hashCode, item.state === "complete");
 }
@@ -159,6 +154,7 @@ function setTestXa360scmCookie(){
     let currentUrl = window.location.href;
     if (currentUrl.includes("https://testxa.360scm.com/")
         || currentUrl.includes("https://testxaoracle.360scm.com/")){
+
         let cookies = [
             {"Key": "SSID", "Value": localStorage.getItem("SSID")},
             {"Key": "Token", "Value": localStorage.getItem("Token")},
@@ -188,6 +184,7 @@ function setTestXa360scmCookie(){
 
 function jav114Link(){
     let url = window.location.href;
+
     if (url.includes('141jav.com')){
         $("body").on({
             click: function(e) {
@@ -220,13 +217,15 @@ function jav114Link(){
 }
 
 function searchShortcutKey(){
-    $(document).keydown(function(event) {
+    $(document).keydown(event => {
         if (event.altKey && event.shiftKey && event.keyCode === 80) {
             let locationUrl = window.location.href;
             let keyword = window.getSelection().toString();
+
             sendMessage("searchKeyword", 0, {keyword: keyword, url:locationUrl}, () => {});
         }else if (event.altKey && event.keyCode === 68){
             let locationUrl = window.location.href;
+            
             sendMessage("bookmark", 1, locationUrl);
         }
     });
@@ -240,43 +239,9 @@ function preViewShortcutKey(){
     });
 }
 
-function jypcLink(){
-    let mainUrl = window.location.href;
-    if (mainUrl.includes('jypc1.com')){
-        let domain = new URL(mainUrl);
-        let domainUrl = domain.origin;
-
-        console.log(domainUrl);
-        let links = $("div[class='C-InfoCard G-Field']");
-        Array.from(links).forEach(link => {
-            let url = null;
-            let current = $(link);
-            let titleElement = current.find('.Title');
-            let title = titleElement.text();
-            let clickEvent = current.attr("onclick");
-            let id = current.parent().attr("data-id");
-
-            if (id) url = domainUrl + "/" + id + ".html";
-            else url = clickEvent.replace("location.href=", "")
-                                 .replace("'","")
-                                 .replace("'","");
-
-            //url = getAbsoluteUrlByHref(url);
-            titleElement.click(e => {
-                console.log(url);
-                sendMessage("openUrl", "", {
-                    url: url
-                }, response => {});
-                e.stopPropagation();
-            })
-        });
-    }
-}
-
 (function load(){
     searchShortcutKey();
     preViewShortcutKey();
     setTestXa360scmCookie();
     jav114Link();
-    jypcLink();
 })();

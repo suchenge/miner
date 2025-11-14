@@ -159,6 +159,7 @@ class PreviewPopup {
                         color: darkgrey;
                     }
                     </style>`);
+
         let calcContainerLocation = (container) => {
             const screen_width = window.innerWidth;
             const screen_height = window.innerHeight;
@@ -182,8 +183,8 @@ class PreviewPopup {
 
         let tabInfo = $("<div class='tabInfo'></div>");
         let titleInfo = $("<div class='titleInfo'>" + this.title + " ×</div>");
-
         let appendToBlackListButton = $("<span>加入黑名单</span>");
+
         appendToBlackListButton.click(() => {
             let hashCodes = this.getSelectedHashCodes();
 
@@ -194,7 +195,9 @@ class PreviewPopup {
             hashCodes.forEach(code => {
                 let div = $('#miner-preview-popup-' + code + '');
                 let url = div.find("img").attr('src');
+
                 new_black_urls.push(url);
+
                 div.remove();
             });
 
@@ -207,6 +210,7 @@ class PreviewPopup {
         let copyUrlButton = $("<span>复制链接</span>");
         copyUrlButton.click(() => {
             let content = '';
+            
             Array.from($('.image_container img')).forEach(img => content += $(img).attr('src') + '\n');
 
             let control = $("#preview-popup-textarea");
@@ -295,6 +299,7 @@ class PreviewPopup {
 
         image_control.click(async (e) => {
             const imageUrl = $(e.currentTarget).attr("src");
+            
             console.log(imageUrl);
             sendMessage("openUrl", "", {url: imageUrl, active: false}, response => {});
         });
