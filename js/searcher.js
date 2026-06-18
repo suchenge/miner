@@ -81,8 +81,8 @@ async function searchKeyword(url, keyword){
     if (url && keyword) {
         if (url.includes('dms.360scm.com') || url.includes('devops.aliyun.com'))
             await new Scm360Searcher(keyword).open();
-        else await new JavdbSearcher(keyword).open();
-        //else await new JavbusSearcher(keyword).open();
+        //else await new JavdbSearcher(keyword).open();
+        else await new JavbusSearcher(keyword).open();
     }
 }
 
@@ -90,7 +90,7 @@ async function getSearchKeywordUrl(url, keyword){
     if (url && keyword) {
         if (url.includes('dms.360scm.com') || url.includes('devops.aliyun.com'))
             return await new Scm360Searcher(keyword).returnUrl();
-        else return await new JavdbSearcher(keyword).returnUrl();
-        //else await new JavbusSearcher(keyword).open();
+        //else return await new JavdbSearcher(keyword).returnUrl();
+        else await new JavbusSearcher(keyword).open();
     }
 }

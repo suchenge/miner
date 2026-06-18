@@ -198,6 +198,23 @@ function jav114Link(){
         }, "a");
     }
 
+    if (url.includes('javbus.com')){
+        var element = $("div[class='col-md-3 info'] p:first span:last");
+        if (element){
+            var id = element.text().trim().replace("-", "");
+            console.log(id);
+
+            $(element).css("cursor", "pointer")
+                      .css("color", "blue")
+                      .css("text-decoration", "underline");
+        
+            $(element).click(() => {
+                let url = "https://www.141jav.com/search/" + id;
+                sendMessage("openUrl", "", {url: url, active: false}, response => {});
+            })
+        }
+    }
+
     if (url.includes('javdb.com/v/')){
         var element = $('h2 strong')[0];
         if (element){

@@ -21,7 +21,11 @@
     "contextMenus",
     "bookmarks",
     "storage",
-    "scripting"
+    "scripting",
+    "proxy",
+    "storage", 
+    "webRequestAuthProvider", 
+    "webRequest" 
   ],
   "host_permissions": [
     "https://*/*",
