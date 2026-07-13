@@ -11,7 +11,8 @@
   "version": "2.0",
   "action": {
     "default_icon": "images/miner-32.png",
-    "default_title": "矿工"
+    "default_title": "矿工",
+    "default_popup": "setting/setting.html"
   },
   "permissions": [
     "tabs",

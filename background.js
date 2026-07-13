@@ -45,6 +45,13 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 
         await chrome.storage.local.set({blackUrls:blackUrls});
     }
+
+    if (request.topic === "setSetting"){
+        await chrome.storage.local.set(request.message);
+        console.log('[setSetting] Saved:', request.message);
+
+        return true;
+    }
 })
 
 chrome.downloads.onChanged.addListener(async item => {
@@ -148,6 +155,7 @@ const menus = [
 chrome.runtime.onInstalled.addListener(() => {
     menus.forEach(menu => chrome.contextMenus.create(menu));
 });
+
 
 /**
  * background_new.js

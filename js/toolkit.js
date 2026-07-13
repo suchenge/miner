@@ -36,7 +36,7 @@ function sendMessage(topic, id, messageBody, callback) {
         message: messageBody
     };
 
-    console.log({method: "sendMessage", request: request});
+    console.log('[sendMessage]', topic, messageBody);
 
     chrome.runtime.sendMessage(request, callback);
 }
