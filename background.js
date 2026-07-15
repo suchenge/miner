@@ -154,122 +154,165 @@ const menus = [
 
 chrome.runtime.onInstalled.addListener(() => {
     menus.forEach(menu => chrome.contextMenus.create(menu));
+
+    // 恢复代理状态
+    chrome.storage.local.get(['proxyEnabled', 'proxySites'], (data) => {
+        if (data.proxyEnabled) {
+            setProxyConfig(data.proxySites || []);
+            console.log('[proxy] 启动时恢复代理连接');
+        }
+    });
 });
 
-
-/**
- * background_new.js
- * 独立可复用的 HTTPS 代理插件
- *
- * 功能：
- * 1. URL 通过正则匹配，走代理访问
- * 2. 其他 URL 直连
- * 3. 监听 tab 变化自动更新路由
- */
-
-// =============================================================================
-// 配置区 — 使用前修改这里的常量
-// =============================================================================
-
-// 正则匹配：满足匹配条件的 URL 走代理（不限制协议）
-var PROXY_PATTERN = "我是谁.com";
-
-// 代理服务器地址和端口
-var PROXY_HOST = 'hk2.408944cc-d6ed-26d7-1145-a584d9a7ea1f.71a30608.the-best-airport.com';
-var PROXY_PORT = 443;
 
 // =============================================================================
 // 代理配置
 // =============================================================================
 
+var currentProxySites = [];
+
+// 设置请求日志
+function setupRequestLogging() {
+    chrome.webRequest.onCompleted.addListener((details) => {
+        if (details.url.startsWith('http')) {
+            try {
+                var url = new URL(details.url);
+                var host = url.hostname;
+                var isProxy = currentProxySites.some(site => host.includes(site));
+                var status = isProxy ? '✅ 走代理' : '⬜ 直连';
+                console.log(`[访问] ${host} - ${status}`);
+            } catch (e) {}
+        }
+    }, { urls: ["<all_urls>"] });
+}
+
+// 初始化请求日志
+setupRequestLogging();
+
 /**
- * 设置代理：正则匹配成功走代理，其他直连
+ * 设置代理：仅对指定网站走代理
+ * @param {string[]} sites - 需要代理的网站域名列表
  */
-function setProxyConfig() {
-  var pacScript = [
-    'function FindProxyForURL(url, host) {',
-    '  var PROXY = "HTTPS ' + PROXY_HOST + ':' + PROXY_PORT + '";',
-    '  var DEFAULT = "DIRECT";',
-    '  var re = "' + PROXY_PATTERN + '";',
-    '  if (url.includes(re)) return PROXY;',
-    '  return DEFAULT;',
-    '}',
-  ].join('\n');
+function setProxyConfig(sites) {
+    sites = sites || [];
+    currentProxySites = sites;
+    var proxyConfig;
 
-  var config = {
-    mode: 'pac_script',
-    pacScript: { data: pacScript }
-  };
+    if (sites.length > 0) {
+        var pacScript = `
+            function FindProxyForURL(url, host) {
+                var sites = ${JSON.stringify(sites)};
+                for (var i = 0; i < sites.length; i++) {
+                    if (host.indexOf(sites[i]) !== -1) {
+                        return 'SOCKS5 127.0.0.1:7897';
+                    }
+                }
+                return 'DIRECT';
+            }
+        `;
+        proxyConfig = {
+            mode: 'pac_script',
+            pacScript: {
+                data: pacScript
+            }
+        };
+    } else {
+        proxyConfig = {
+            mode: 'fixed_servers',
+            rules: {
+                singleProxy: {
+                    scheme: 'socks5',
+                    host: '127.0.0.1',
+                    port: 7897
+                },
+                bypassList: ['localhost', '127.0.0.1']
+            }
+        };
+    }
 
-  chrome.proxy.settings.set({ value: config, scope: 'regular' }, function() {
-    console.log('[proxy] PAC 已设置');
-  });
+    chrome.proxy.settings.set({ value: proxyConfig, scope: 'regular' });
 }
 
 /**
  * 清除代理，恢复直连
  */
 function clearProxyConfig() {
-  chrome.proxy.settings.set({
-    value: { mode: 'system' },
-    scope: 'regular'
-  }, function() {
-    console.log('[proxy] 已断开，恢复直连');
-  });
+    currentProxySites = [];
+    chrome.proxy.settings.set({
+        value: { mode: 'direct' },
+        scope: 'regular'
+    }, function() {
+        console.log('[proxy] 已断开，恢复直连');
+    });
 }
 
 // =============================================================================
-// Tab 监控
+// 消息监听
 // =============================================================================
 
-// Tab 切换时
-chrome.tabs.onActivated.addListener(function(activeInfo) {
-  chrome.tabs.get(activeInfo.tabId, function(tab) {
-    if (tab && tab.url) {
-      updateProxyStatus(tab.url);
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    // 原有消息处理
+    if (request.topic === "searchKeyword"){
+        chrome.scripting.executeScript({
+            target: { tabId: sender.tab.id },
+            args: [request.message.url, request.message.keyword],
+            func: async (url, keyword) => await searchKeyword(url, keyword)
+        });
+        return true;
     }
-  });
+
+    if (request.topic === "openUrl"){
+        chrome.tabs.create({ url: request.message.url, active: request.message.active });
+        return true;
+    }
+
+    if (request.topic === "download"){
+        chrome.downloads.download(request.message, async (item) => {
+            downloadItemInfos.set(item, sender.tab.id);
+        });
+        sendResponse(request);
+        return true;
+    }
+
+    if (request.topic === "appendBlackUrls"){
+        getBlackUrls().then(blackUrls => {
+            if (blackUrls) blackUrls.push.apply(blackUrls, request.message);
+            else blackUrls = request.message;
+            blackUrls = [...new Set(blackUrls)];
+            chrome.storage.local.set({blackUrls:blackUrls});
+        });
+        return true;
+    }
+
+    if (request.topic === "setSetting"){
+        chrome.storage.local.set(request.message);
+        console.log('[setSetting] Saved:', request.message);
+        sendResponse({ success: true });
+        return true;
+    }
+
+    // 代理相关消息处理
+    if (request.topic === 'setProxy') {
+        const enabled = request.message.enabled;
+        const sites = request.message.sites || [];
+        if (enabled) {
+            setProxyConfig(sites);
+        } else {
+            clearProxyConfig();
+        }
+        chrome.storage.local.set({ proxyEnabled: enabled, proxySites: sites }, () => {
+            sendResponse({ success: true, enabled: enabled });
+        });
+        return true;
+    }
+
+    if (request.topic === 'getProxyStatus') {
+        chrome.storage.local.get(['proxyEnabled', 'proxyNode'], (data) => {
+            sendResponse({
+                enabled: data.proxyEnabled || false,
+                node: data.proxyNode || null
+            });
+        });
+        return true;
+    }
 });
-
-// 同一 Tab 内 URL 变化时
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-  if (changeInfo.url) {
-    updateProxyStatus(changeInfo.url);
-  }
-});
-
-/**
- * 根据 URL 正则匹配结果更新状态
- * @param {string} url
- */
-function updateProxyStatus(url) {
-  if (url.includes(PROXY_PATTERN)) {
-    console.log('[proxy] 当前页面走代理:', url);
-    proxyConnect();
-  } else {
-    proxyDisconnect();
-    console.log('[proxy] 当前页面直连:', url);
-  }
-}
-
-// =============================================================================
-// 对外 API
-// =============================================================================
-
-/**
- * 连接代理
- */
-function proxyConnect() {
-  setProxyConfig();
-  chrome.storage.local.set({ connected: 1 });
-  console.log('[proxy] 已连接');
-}
-
-/**
- * 断开代理
- */
-function proxyDisconnect() {
-  clearProxyConfig();
-  chrome.storage.local.set({ connected: 0 });
-  console.log('[proxy] 已断开');
-}

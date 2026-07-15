@@ -16,29 +16,36 @@
             width: 320px;
             padding: 20px;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            min-height: 180px;
+            min-height: 200px;
             color: #fff;
         }
 
-        .header {
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
-        .header-icon {
-            font-size: 24px;
+        .section-icon {
+            font-size: 18px;
         }
 
-        .header-title {
-            font-size: 16px;
+        .section-title {
+            font-size: 14px;
             font-weight: 600;
             color: #fff;
         }
 
+        /* 检索引擎样式 */
         .engine-grid {
             display: flex;
             gap: 12px;
@@ -49,7 +56,7 @@
             position: relative;
             cursor: pointer;
             border-radius: 12px;
-            padding: 16px 12px;
+            padding: 14px 10px;
             text-align: center;
             background: rgba(255,255,255,0.05);
             border: 2px solid rgba(255,255,255,0.1);
@@ -68,20 +75,20 @@
         }
 
         .engine-icon {
-            font-size: 28px;
-            margin-bottom: 8px;
+            font-size: 24px;
+            margin-bottom: 6px;
             display: block;
         }
 
         .engine-name {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #fff;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .engine-desc {
-            font-size: 11px;
+            font-size: 10px;
             color: rgba(255,255,255,0.5);
         }
 
@@ -92,41 +99,235 @@
         .engine-card.selected::after {
             content: '✓';
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 18px;
-            height: 18px;
+            top: 6px;
+            right: 6px;
+            width: 16px;
+            height: 16px;
             background: #4facfe;
             border-radius: 50%;
-            font-size: 11px;
-            line-height: 18px;
+            font-size: 10px;
+            line-height: 16px;
             color: #1a1a2e;
             font-weight: bold;
         }
 
-        .status-bar {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+        /* 代理设置样式 */
+        .proxy-card {
+            border-radius: 12px;
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .proxy-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .status-label {
-            font-size: 12px;
-            color: rgba(255,255,255,0.5);
+        .proxy-label {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
         }
 
-        .status-value {
+        .proxy-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #666;
+            transition: background 0.3s ease;
+        }
+
+        .status-dot.active {
+            background: #4caf50;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+        }
+
+        .status-text {
             font-size: 12px;
             font-weight: 600;
             color: #4facfe;
-            padding: 4px 10px;
-            background: rgba(79, 172, 254, 0.15);
-            border-radius: 20px;
         }
 
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            cursor: pointer;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: #4facfe;
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(22px);
+        }
+
+        .proxy-info {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 11px;
+            color: rgba(255,255,255,0.4);
+            line-height: 1.5;
+        }
+
+        /* 代理网站列表 */
+        .proxy-sites {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .proxy-sites-title {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 8px;
+        }
+
+        .proxy-sites-input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .proxy-sites-input {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 12px;
+            color: #fff;
+            outline: none;
+        }
+
+        .proxy-sites-input:focus {
+            border-color: #4facfe;
+        }
+
+        .proxy-sites-input::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+
+        .proxy-sites-add {
+            background: #4facfe;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            color: #1a1a2e;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .proxy-sites-add:hover {
+            background: #7cc3fe;
+        }
+
+        .proxy-sites-list {
+            max-height: 100px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.2) transparent;
+        }
+
+        .proxy-sites-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .proxy-sites-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .proxy-sites-list::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+        }
+
+        .proxy-site-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 8px;
+            margin-bottom: 4px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 4px;
+            font-size: 11px;
+            transition: background 0.2s ease;
+        }
+
+        .proxy-site-item:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .proxy-site-item span {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .proxy-site-item button {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.4);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0 4px;
+            transition: color 0.2s ease;
+        }
+
+        .proxy-site-item button:hover {
+            color: #ff6b6b;
+        }
+
+        .proxy-sites-empty {
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+            text-align: center;
+            padding: 8px;
+        }
+
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -163,28 +364,57 @@
     <script src="setting.js"></script>
 </head>
 <body>
-    <div class="header">
-        <span class="header-icon">⚙️</span>
-        <span class="header-title">番号检索引擎</span>
-    </div>
-
-    <div class="engine-grid">
-        <div class="engine-card" data-engine="DB">
-            <span class="engine-icon">🗃️</span>
-            <div class="engine-name">JavDB</div>
-            <div class="engine-desc">数据库全面</div>
+    <div class="section">
+        <div class="section-header">
+            <span class="section-icon">🔍</span>
+            <span class="section-title">番号检索引擎</span>
         </div>
-
-        <div class="engine-card" data-engine="Bus">
-            <span class="engine-icon">🚌</span>
-            <div class="engine-name">JavBus</div>
-            <div class="engine-desc">搜索速度快</div>
+        <div class="engine-grid">
+            <div class="engine-card" data-engine="DB">
+                <span class="engine-icon">🗃️</span>
+                <div class="engine-name">JavDB</div>
+                <div class="engine-desc">数据库全面</div>
+            </div>
+            <div class="engine-card" data-engine="Bus">
+                <span class="engine-icon">🚌</span>
+                <div class="engine-name">JavBus</div>
+                <div class="engine-desc">搜索速度快</div>
+            </div>
         </div>
     </div>
 
-    <div class="status-bar">
-        <span class="status-label">当前引擎</span>
-        <span class="status-value">--</span>
+    <div class="section">
+        <div class="section-header">
+            <span class="section-icon">🌐</span>
+            <span class="section-title">代理设置</span>
+        </div>
+        <div class="proxy-card">
+            <div class="proxy-row">
+                <span class="proxy-label">启用代理</span>
+                <div class="proxy-status">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span class="status-text" id="statusText">已关闭</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="proxyToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="proxy-info">
+                代理流量通过本机 Clash Verge (127.0.0.1:7897)<br>
+                仅影响当前浏览器，不影响其他软件
+            </div>
+            <div class="proxy-sites">
+                <div class="proxy-sites-title">代理网站列表（仅这些网站走代理）</div>
+                <div class="proxy-sites-input-row">
+                    <input type="text" class="proxy-sites-input" id="proxySiteInput" placeholder="输入域名，如 javbus.com">
+                    <button class="proxy-sites-add" id="addProxySiteBtn">添加</button>
+                </div>
+                <div class="proxy-sites-list" id="proxySitesList"></div>
+            </div>
+        </div>
     </div>
+
+    <div id="toast" class="toast">已保存</div>
 </body>
 </html>

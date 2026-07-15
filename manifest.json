@@ -24,9 +24,10 @@
     "storage",
     "scripting",
     "proxy",
-    "storage", 
-    "webRequestAuthProvider", 
-    "webRequest" 
+    "storage",
+    "webRequestAuthProvider",
+    "webRequest",
+    "webRequestBlocking"
   ],
   "host_permissions": [
     "https://*/*",
