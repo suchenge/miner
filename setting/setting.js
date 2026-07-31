@@ -1,6 +1,6 @@
 console.log('Setting page script starting');
 
-const engineNames = { 'DB': 'JavDB', 'Bus': 'JavBus' };
+const engineNames = { 'DB': 'JavDB', 'Bus': 'JavBus', 'Miss': 'Miss' };
 
 function showToast(message) {
     const toast = document.getElementById('toast');

@@ -7,7 +7,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
    }
 });
 
-
+/*
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     if (request.topic === "searchKeyword"){
         await chrome.scripting.executeScript({
@@ -53,6 +53,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
         return true;
     }
 })
+*/
 
 chrome.downloads.onChanged.addListener(async item => {
     if (item.state && (item.state.current === "complete" || item.state.current === "interrupted")) {

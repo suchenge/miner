@@ -21,22 +21,6 @@ class BaseSearcher {
     }
 }
 
-class JavbusSearcher extends BaseSearcher {
-    constructor(id){
-        id = id.replace(/(\d+)/, '-$1');
-        console.log(id);
-        super(id);
-    }
-
-    active = false;
-
-    async getUrl(){
-        let url = "https://www.javbus.com/" + this.id;
-
-        return url;
-    }
-}
-
 class Scm360Searcher extends BaseSearcher {
     constructor(id) {
         super(id);
@@ -56,6 +40,39 @@ class Scm360Searcher extends BaseSearcher {
     }
 }
 
+class JavbusSearcher extends BaseSearcher {
+    constructor(id){
+        id = id.replace(/(\d+)/, '-$1');
+        console.log(id);
+        super(id);
+    }
+
+    active = false;
+
+    async getUrl(){
+        let url = "https://www.javbus.com/" + this.id;
+
+        return url;
+    }
+}
+
+class MissavSearcher extends BaseSearcher {
+    constructor(id){
+        id = id.replace(/(\d+)/, '-$1');
+        console.log(id);
+        super(id);
+    }
+
+    active = false;
+
+    async getUrl(){
+        let url = `https://missav123.jp/${this.id}`;
+        console.log(url);
+
+        return url;
+    }
+}
+
 class JavdbSearcher extends BaseSearcher {
     constructor(id) {
         super(id)
@@ -64,13 +81,18 @@ class JavdbSearcher extends BaseSearcher {
     async getUrl() {
         let baseUrl = "https://javdb.com/";
         let searchUrl = baseUrl + "search?q=" + this.id + "&f=all";
+        console.log(searchUrl);
+
         let response = await request(searchUrl);
         
         if (response) {
             let html = $(response);
             let href = html.find("a[class='box']").attr("href");
 
-            return baseUrl + href.substring(1, href.length);
+            let result = baseUrl + href.substring(1, href.length);
+            console.log(result);
+
+            return result;
         }
 
         return null;
@@ -84,10 +106,23 @@ async function searchKeyword(url, keyword){
         else {
             const { searcher } = await chrome.storage.local.get('searcher');
             console.log(searcher);
+            switch(searcher){
+                case 'DB':
+                    await new JavdbSearcher(keyword).open();
+                    break;
+                case 'Miss':
+                    await new MissavSearcher(keyword).open();
+                    break;
+                case 'Bus':
+                    await new JavbusSearcher(keyword).open();
+                    break;
+            }
+            /*
             if (searcher === 'DB')
                 await new JavdbSearcher(keyword).open();
             else
                 await new JavbusSearcher(keyword).open();
+            */
         }
     }
 }
