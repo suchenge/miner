@@ -231,6 +231,27 @@ function jav114Link(){
             })
         }
     }
+
+    if (url.includes('missav123')){
+        let element = $('h1')[0];
+
+        if (element){
+            let title = element.innerText.split(" ")[0];
+            console.log(title);
+
+            let id = title.trim().replace("-", "");
+            console.log(id);
+
+            $(element).css("cursor", "pointer")
+                      .css("color", "blue")
+                      .css("text-decoration", "underline");
+
+            $(element).click(() => {
+                let url = "https://www.141jav.com/search/" + id;
+                sendMessage("openUrl", "", {url: url, active: false}, response => {});
+            })
+        }
+    }
 }
 
 function searchShortcutKey(){
