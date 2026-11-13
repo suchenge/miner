@@ -1,0 +1,12 @@
+/* 取消 Inoreader 全文阅读区域的宽度限制 */
+.article_full_contents {
+    max-width: none !important;
+}
+
+.article-container {
+    max-width: none !important;
+}
+
+.view_style_1 #wraper #reader_pane .articles_feed_group_heading, .view_style_1 #wraper #reader_pane .ar {
+    max-width: none !important;
+}

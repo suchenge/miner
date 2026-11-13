@@ -50,6 +50,11 @@
         "/js/downloader.js",
         "/js/main.js"
       ]
+    },
+    {
+      "matches": ["https://www.inoreader.com/all_articles*"],
+      "css": ["/css/inoreader.css"],
+      "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [{
