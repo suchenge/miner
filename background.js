@@ -251,6 +251,61 @@ function clearProxyConfig() {
 // 消息监听
 // =============================================================================
 
+function getHostname(url) {
+    try {
+        return new URL(url).hostname;
+    } catch (e) {
+        return url;
+    }
+}
+
+// 在页面右下角显示一个不影响操作的轻提示
+function showPageToast(tabId, message, isError = false) {
+    if (!tabId) return;
+
+    chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        func: (text, error) => {
+            const TOAST_ID = 'miner-page-toast';
+
+            let toast = document.getElementById(TOAST_ID);
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = TOAST_ID;
+                toast.style.cssText = [
+                    'position:fixed',
+                    'right:20px',
+                    'bottom:20px',
+                    'z-index:2147483647',
+                    'max-width:320px',
+                    'padding:10px 14px',
+                    'border-radius:6px',
+                    'background:rgba(0,0,0,.82)',
+                    'color:#fff',
+                    'font:13px/1.45 system-ui,-apple-system,sans-serif',
+                    'box-shadow:0 4px 14px rgba(0,0,0,.28)',
+                    'pointer-events:none',
+                    'opacity:0',
+                    'transition:opacity .2s ease',
+                    'word-break:break-all'
+                ].join(';');
+                (document.body || document.documentElement).appendChild(toast);
+            }
+
+            toast.style.background = error ? 'rgba(160,30,30,.9)' : 'rgba(0,0,0,.82)';
+            toast.textContent = text;
+            clearTimeout(toast._minerToastTimer);
+            requestAnimationFrame(() => { toast.style.opacity = '1'; });
+
+            toast._minerToastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 250);
+            }, error ? 3000 : 2200);
+        },
+        args: [message, isError]
+    }).catch(() => {});
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // 原有消息处理
     if (request.topic === "searchKeyword"){
@@ -263,7 +318,57 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 
     if (request.topic === "openUrl"){
-        chrome.tabs.create({ url: request.message.url, active: request.message.active });
+        chrome.tabs.create({ url: request.message.url, active: request.message.active })
+            .then(() => {
+                showPageToast(sender.tab && sender.tab.id, '已在新标签页打开：' + getHostname(request.message.url));
+                sendResponse({ ok: true });
+            })
+            .catch(error => {
+                showPageToast(sender.tab && sender.tab.id, '打开标签页失败：' + error, true);
+                sendResponse({ ok: false, error: String(error) });
+            });
+
+        return true;
+    }
+
+    // 在后台请求跨域页面，content script 里的 XHR 会受页面同源策略限制
+    if (request.topic === "fetchHtml"){
+        const { url, cookies } = request.message;
+
+        (async () => {
+            if (cookies && cookies.length) {
+                for (const cookie of cookies) {
+                    await chrome.cookies.set({
+                        url: url,
+                        name: cookie.name,
+                        value: cookie.value,
+                        path: '/',
+                        secure: true,
+                        sameSite: 'no_restriction'
+                    });
+                }
+            }
+
+            const response = await fetch(url, { credentials: 'include' });
+            const html = await response.text();
+
+            if (response.ok) {
+                showPageToast(sender.tab && sender.tab.id, '页面获取成功：' + getHostname(url));
+            } else {
+                showPageToast(sender.tab && sender.tab.id, '页面获取失败：HTTP ' + response.status, true);
+            }
+
+            sendResponse({
+                ok: response.ok,
+                status: response.status,
+                html: response.ok ? html : '',
+                error: response.ok ? null : 'HTTP ' + response.status
+            });
+        })().catch(err => {
+            showPageToast(sender.tab && sender.tab.id, '页面获取失败：' + err, true);
+            sendResponse({ ok: false, error: String(err) });
+        });
+
         return true;
     }
 
